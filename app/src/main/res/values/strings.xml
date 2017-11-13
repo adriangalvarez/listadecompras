@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Lista de Compras</string>
+    <string name="listaTotal">Lista Total</string>
+    <string name="buttonAdd">Agregar ítem</string>
+    <string name="addItemActivityTitle">Agregar ítem</string>
+    <string name="addItemActivityTitleEdit">Editar ítem</string>
+    <string name="addItemActivityTvAddItem">Descripción</string>
+    <string name="addItemActivityTvCantidad">Cantidad</string>
+    <string name="addItemActivityEtAddItemTooltip">Artículo a comprar</string>
+    <string name="addItemActivityCbListaCompras">Agregar a la lista de compras</string>
+    <string name="buttonAceptar">Aceptar</string>
+    <string name="buttonCancelar">Cancelar</string>
+    <string name="itemYaExiste">¡Ya existe ese ítem!</string>
+    <string name="itemAgregado">agregado.</string>
+</resources>

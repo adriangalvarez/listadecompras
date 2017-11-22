@@ -42,27 +42,6 @@
             android:layout_below="@+id/editTextDescripcion"
             android:layout_marginTop="30dp"
             android:text="@string/addItemActivityCbListaCompras"/>
-
-        <EditText
-            android:id="@+id/editTextCantidad"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/checkBoxListaCompras"
-            android:layout_below="@+id/checkBoxListaCompras"
-            android:layout_marginTop="30dp"
-            android:ems="10"
-            android:inputType="number"
-            android:visibility="invisible"/>
-
-        <TextView
-            android:id="@+id/textViewCantidad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/editTextCantidad"
-            android:layout_marginTop="12dp"
-            android:layout_toStartOf="@+id/editTextDescripcion"
-            android:text="@string/addItemActivityTvCantidad"
-            android:visibility="invisible"/>
     </RelativeLayout>
 
     <Button

@@ -17,8 +17,6 @@ public class AddItemActivity extends AppCompatActivity{
 	private Button buttonCancelar;
 	private EditText editTextDescripcion;
 	private CheckBox checkBoxListaCompras;
-	private TextView textViewCantidad;
-	private EditText editTextCantidad;
 	private boolean isEditing = false;
 
 	@Override
@@ -30,8 +28,6 @@ public class AddItemActivity extends AppCompatActivity{
 		buttonCancelar = findViewById( R.id.buttonCancel );
 		editTextDescripcion = findViewById( R.id.editTextDescripcion );
 		checkBoxListaCompras = findViewById( R.id.checkBoxListaCompras );
-		textViewCantidad = findViewById( R.id.textViewCantidad );
-		editTextCantidad = findViewById( R.id.editTextCantidad );
 
 		buttonCancelar.setOnClickListener( new View.OnClickListener(){
 			@Override
@@ -45,10 +41,11 @@ public class AddItemActivity extends AppCompatActivity{
 		buttonAceptar.setOnClickListener( new View.OnClickListener(){
 			@Override
 			public void onClick( View v ){
-				if( !checkBoxListaCompras.isChecked() )
-					editTextCantidad.setText( "0" );
+				int iCant = 0;
+				if( checkBoxListaCompras.isChecked() )
+					iCant = 1;
 				Intent intent = new Intent();
-				ItemBL itemBL = new ItemBL( editTextDescripcion.getText().toString(), Integer.parseInt( editTextCantidad.getText().toString() ) );
+				ItemBL itemBL = new ItemBL( editTextDescripcion.getText().toString(), iCant );
 				intent.putExtra( "itemBL", itemBL );
 				intent.putExtra( "listacompras", checkBoxListaCompras.isChecked() );
 				intent.putExtra( "descripcionant", getIntent().getStringExtra( "descripcionant" ) );
@@ -57,30 +54,10 @@ public class AddItemActivity extends AppCompatActivity{
 			}
 		} );
 
-		checkBoxListaCompras.setOnClickListener( new View.OnClickListener(){
-			@Override
-			public void onClick( View v ){
-				if( checkBoxListaCompras.isChecked() ){
-					editTextCantidad.setVisibility( View.VISIBLE );
-				}else{
-					editTextCantidad.setVisibility( View.INVISIBLE );
-				}
-				textViewCantidad.setVisibility( editTextCantidad.getVisibility() );
-			}
-		} );
-
 		Intent intentReferrer = getIntent();
 		if( intentReferrer.getBooleanExtra( "isEditing", false ) ){
 			editTextDescripcion.setText( intentReferrer.getStringExtra( "descripcionant" ) );
 			checkBoxListaCompras.setChecked( intentReferrer.getBooleanExtra( "listacomprasant", false ) );
-			editTextCantidad.setText( intentReferrer.getStringExtra( "cantidadant" ) );
-			if( checkBoxListaCompras.isChecked() ){
-				editTextCantidad.setVisibility( View.VISIBLE );
-			}else{
-				editTextCantidad.setText( "0" );
-				editTextCantidad.setVisibility( View.INVISIBLE );
-			}
-			textViewCantidad.setVisibility( editTextCantidad.getVisibility() );
 			getSupportActionBar().setTitle( R.string.addItemActivityTitleEdit );
 		}else{
 			getSupportActionBar().setTitle( R.string.addItemActivityTitle );

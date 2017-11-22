@@ -107,8 +107,6 @@ public class MainActivity extends AppCompatActivity{
 				intent.putExtra( "descripcionant", itemBLAnt.getDescripcion() );
 				if( listaCompras.contains( itemBLAnt ) ){
 					intent.putExtra( "listacomprasant", true );
-					itemBLAnt = listaCompras.get( listaCompras.indexOf( itemBLAnt ) );
-					intent.putExtra( "cantidadant", String.valueOf( itemBLAnt.getCantidad() ) );
 				}else{
 					intent.putExtra( "listacomprasant", false );
 				}

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.util.SortedList;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -19,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -68,13 +68,13 @@ public class MainActivity extends AppCompatActivity{
 			}
 		} );
 
-//		OrdenarAdapterCompras();
+		OrdenarAdapterCompras();
 		mRecyclerCompras.setLayoutManager( mLayoutManager );
 		mRecyclerCompras.setAdapter( mAdapterCompras );
 
 		listViewTotal = findViewById( R.id.list_item_total );
 		adapterTotal = new ArrayAdapter<>( this, android.R.layout.simple_list_item_1, listaTotal );
-//		OrdenarAdapter( adapterTotal );
+		OrdenarAdapter( adapterTotal );
 		listViewTotal.setAdapter( adapterTotal );
 		listViewTotal.setVisibility( View.INVISIBLE );
 
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity{
 					listaCompras.add( itemBL );
 					Toast.makeText( MainActivity.this, itemBL.getDescripcion() + " " + getString( R.string.itemAgregado ), Toast.LENGTH_SHORT ).show();
 					mAdapterCompras.notifyDataSetChanged();
-//					OrdenarAdapterCompras();
+					OrdenarAdapterCompras();
 				}else{
 					Toast.makeText( MainActivity.this, R.string.itemYaExiste, Toast.LENGTH_SHORT ).show();
 				}
@@ -129,14 +129,15 @@ public class MainActivity extends AppCompatActivity{
 		buttonAdd.setVisibility( View.INVISIBLE );
 	}
 
-//	private void OrdenarAdapterCompras(){
-//		mAdapterCompras.sort( new Comparator< ItemBL >(){
-//			@Override
-//			public int compare( ItemBL o1, ItemBL o2 ){
-//				return o1.getDescripcion().compareTo( o2.getDescripcion() );
-//			}
-//		} );
-//	}
+	private void OrdenarAdapterCompras(){
+		Collections.sort( listaCompras, new Comparator< ItemBL >(){
+			@Override
+			public int compare( ItemBL o1, ItemBL o2 ){
+				return o1.getDescripcion().compareTo( o2.getDescripcion() );
+			}
+		});
+		mAdapterCompras.notifyDataSetChanged();
+	}
 
 	private void OrdenarAdapter( ArrayAdapter< String > adapter ){
 		adapter.sort( new Comparator< String >(){
@@ -204,15 +205,12 @@ public class MainActivity extends AppCompatActivity{
 			case REQ_EDIT_ITEM:
 				if( resultCode == RESULT_OK ){
 					ItemBL editedItem = ( ItemBL ) data.getSerializableExtra( "itemBL" );
-//					SharedPreferences.Editor editor = compras.edit();
-//					editor.putInt( itemBL.getDescripcion(), itemBL.getCantidad() );
 					if( requestCode == REQ_EDIT_ITEM ){
 						String descripcionAnt = data.getStringExtra( "descripcionant" );
 						editedItem.modify( MainActivity.this, data.getStringExtra( "descripcionant" ) );
-//						editor.remove( descripcionAnt );
 						listaTotal.remove( descripcionAnt );
 
-						if( listaCompras.indexOf( editedItem ) != SortedList.INVALID_POSITION ){
+						if( listaCompras.contains( editedItem ) ){
 							editedItem.deleteFromCompras( MainActivity.this );
 						}
 					}
@@ -241,7 +239,7 @@ public class MainActivity extends AppCompatActivity{
 		if( !listaCompras.contains( itemBL ) ){
 			listaCompras.add( itemBL );
 			Toast.makeText( MainActivity.this, itemBL.getDescripcion() + " " + getString( R.string.itemAgregado ), Toast.LENGTH_SHORT ).show();
-//			OrdenarAdapterCompras();
+			OrdenarAdapterCompras();
 		}else{
 			Toast.makeText( MainActivity.this, R.string.itemYaExiste, Toast.LENGTH_SHORT ).show();
 		}

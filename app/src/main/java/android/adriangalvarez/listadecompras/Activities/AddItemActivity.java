@@ -1,5 +1,6 @@
 package android.adriangalvarez.listadecompras.Activities;
 
+import android.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import android.adriangalvarez.listadecompras.R;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,8 +10,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class AddItemActivity extends AppCompatActivity{
 
@@ -27,7 +26,7 @@ public class AddItemActivity extends AppCompatActivity{
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_add_item );
 
-		buttonAceptar = findViewById( R.id.buttonAdd );
+		buttonAceptar = findViewById( R.id.buttonAccept );
 		buttonCancelar = findViewById( R.id.buttonCancel );
 		editTextDescripcion = findViewById( R.id.editTextDescripcion );
 		checkBoxListaCompras = findViewById( R.id.checkBoxListaCompras );
@@ -46,10 +45,12 @@ public class AddItemActivity extends AppCompatActivity{
 		buttonAceptar.setOnClickListener( new View.OnClickListener(){
 			@Override
 			public void onClick( View v ){
+				if( !checkBoxListaCompras.isChecked() )
+					editTextCantidad.setText( "0" );
 				Intent intent = new Intent();
-				intent.putExtra( "descripcion", editTextDescripcion.getText().toString() );
+				ItemBL itemBL = new ItemBL( editTextDescripcion.getText().toString(), Integer.parseInt( editTextCantidad.getText().toString() ) );
+				intent.putExtra( "itemBL", itemBL );
 				intent.putExtra( "listacompras", checkBoxListaCompras.isChecked() );
-				intent.putExtra( "cantidad", editTextCantidad.getText().toString() );
 				intent.putExtra( "descripcionant", getIntent().getStringExtra( "descripcionant" ) );
 				setResult( RESULT_OK, intent );
 				finish();
@@ -62,7 +63,6 @@ public class AddItemActivity extends AppCompatActivity{
 				if( checkBoxListaCompras.isChecked() ){
 					editTextCantidad.setVisibility( View.VISIBLE );
 				}else{
-					editTextCantidad.setText( "0" );
 					editTextCantidad.setVisibility( View.INVISIBLE );
 				}
 				textViewCantidad.setVisibility( editTextCantidad.getVisibility() );

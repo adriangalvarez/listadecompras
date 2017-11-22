@@ -1,11 +1,14 @@
 package android.adriangalvarez.listadecompras.Activities;
 
+import android.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import android.adriangalvarez.listadecompras.R;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.util.SortedList;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,14 +25,17 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity{
 
-	private SharedPreferences compras;
-	private List< String > listaCompras;
+	private List< ItemBL > listaCompras;
+	private ItemAdapter mAdapterCompras;
+	private RecyclerView mRecyclerCompras;
+	private RecyclerView.LayoutManager mLayoutManager;
+
 	private List< String > listaTotal;
-	private ListView listViewCompras;
 	private ListView listViewTotal;
-	private ArrayAdapter< String > adapterCompras;
 	private ArrayAdapter< String > adapterTotal;
+
 	private Button buttonAdd;
+
 	private final int REQ_ADD_ITEM = 1;
 	private final int REQ_EDIT_ITEM = 2;
 
@@ -43,39 +49,50 @@ public class MainActivity extends AppCompatActivity{
 		actionBar.setDisplayShowHomeEnabled( true );
 		actionBar.setIcon( R.drawable.shoppingcart );
 
-		compras = this.getSharedPreferences( "sharedPrefs", MODE_PRIVATE );
 		InitListaCompras();
 
-		listViewCompras = findViewById( R.id.list_item_compras );
-		adapterCompras = new ArrayAdapter<>( this, android.R.layout.simple_list_item_1, listaCompras );
-		OrdenarAdapter( adapterCompras );
-		listViewCompras.setAdapter( adapterCompras );
-		listViewCompras.setOnItemClickListener( new AdapterView.OnItemClickListener(){
+		mRecyclerCompras = findViewById( R.id.recycler_compras );
+		mLayoutManager = new LinearLayoutManager( this );
+		mAdapterCompras = new ItemAdapter( listaCompras, R.layout.listview_row_item, new ItemAdapter.onItemClickListener(){
 			@Override
-			public void onItemClick( AdapterView< ? > parent, View view, int position, long id ){
-				String clicked = listaCompras.get( position );
-				listaCompras.remove( clicked );
-				adapterCompras.notifyDataSetChanged();
-				SharedPreferences.Editor editor = compras.edit();
-				editor.putBoolean( clicked, false );
-				editor.commit();
+			public void onItemClick( ItemBL itemBL, int position ){
+				listaCompras.remove( itemBL );
+				mAdapterCompras.notifyDataSetChanged();
+				itemBL.deleteFromCompras( MainActivity.this );
+			}
+
+			@Override
+			public void onItemAddClick( ItemBL itemBL, int position ){
+				itemBL.addCantidad( MainActivity.this );
+				mAdapterCompras.notifyDataSetChanged();
 			}
 		} );
 
+//		OrdenarAdapterCompras();
+		mRecyclerCompras.setLayoutManager( mLayoutManager );
+		mRecyclerCompras.setAdapter( mAdapterCompras );
+
 		listViewTotal = findViewById( R.id.list_item_total );
 		adapterTotal = new ArrayAdapter<>( this, android.R.layout.simple_list_item_1, listaTotal );
-		OrdenarAdapter( adapterTotal );
+//		OrdenarAdapter( adapterTotal );
 		listViewTotal.setAdapter( adapterTotal );
 		listViewTotal.setVisibility( View.INVISIBLE );
 
 		listViewTotal.setOnItemClickListener( new AdapterView.OnItemClickListener(){
 			@Override
 			public void onItemClick( AdapterView< ? > parent, View view, int position, long id ){
-				String clicked = listaTotal.get( position );
-				AddItemToAdapter( clicked, listaCompras, adapterCompras );
-				SharedPreferences.Editor editor = compras.edit();
-				editor.putBoolean( clicked, true );
-				editor.commit();
+				ItemBL itemBL = new ItemBL( listaTotal.get( position ), 1 );
+				if( !listaCompras.contains( itemBL ) ){
+					listaCompras.add( itemBL );
+					Toast.makeText( MainActivity.this, itemBL.getDescripcion() + " " + getString( R.string.itemAgregado ), Toast.LENGTH_SHORT ).show();
+					mAdapterCompras.notifyDataSetChanged();
+//					OrdenarAdapterCompras();
+				}else{
+					Toast.makeText( MainActivity.this, R.string.itemYaExiste, Toast.LENGTH_SHORT ).show();
+				}
+
+				itemBL.setCantidad( 1 );
+				itemBL.add( MainActivity.this );
 				ToggleListView();
 			}
 		} );
@@ -85,14 +102,22 @@ public class MainActivity extends AppCompatActivity{
 			public boolean onItemLongClick( AdapterView< ? > parent, View view, int position, long id ){
 				Intent intent = new Intent( MainActivity.this, AddItemActivity.class );
 				intent.putExtra( "isEditing", true );
-				intent.putExtra( "descripcionant", listaTotal.get( position ) );
-				intent.putExtra( "listacomprasant", listaCompras.contains( listaTotal.get( position ) ) );
+
+				ItemBL itemBLAnt = new ItemBL( listaTotal.get( position ) );
+				intent.putExtra( "descripcionant", itemBLAnt.getDescripcion() );
+				if( listaCompras.contains( itemBLAnt ) ){
+					intent.putExtra( "listacomprasant", true );
+					itemBLAnt = listaCompras.get( listaCompras.indexOf( itemBLAnt ) );
+					intent.putExtra( "cantidadant", String.valueOf( itemBLAnt.getCantidad() ) );
+				}else{
+					intent.putExtra( "listacomprasant", false );
+				}
 				startActivityForResult( intent, REQ_EDIT_ITEM );
 				return true;
 			}
 		} );
 
-		buttonAdd = findViewById( R.id.buttonAdd );
+		buttonAdd = findViewById( R.id.buttonAdd);
 		buttonAdd.setOnClickListener( new View.OnClickListener(){
 			@Override
 			public void onClick( View v ){
@@ -103,6 +128,15 @@ public class MainActivity extends AppCompatActivity{
 		} );
 		buttonAdd.setVisibility( View.INVISIBLE );
 	}
+
+//	private void OrdenarAdapterCompras(){
+//		mAdapterCompras.sort( new Comparator< ItemBL >(){
+//			@Override
+//			public int compare( ItemBL o1, ItemBL o2 ){
+//				return o1.getDescripcion().compareTo( o2.getDescripcion() );
+//			}
+//		} );
+//	}
 
 	private void OrdenarAdapter( ArrayAdapter< String > adapter ){
 		adapter.sort( new Comparator< String >(){
@@ -117,11 +151,14 @@ public class MainActivity extends AppCompatActivity{
 		listaTotal = new ArrayList<>();
 		listaCompras = new ArrayList<>();
 
-		Map< String, ? > allEntries = compras.getAll();
+		Map< String, ? > allEntries = ItemBL.getAll( MainActivity.this );
 		for( Map.Entry< String, ? > entry : allEntries.entrySet() ){
 			listaTotal.add( entry.getKey() );
-			if( Boolean.valueOf( entry.getValue().toString() ) )
-				listaCompras.add( entry.getKey() );
+			int cantidad = Integer.parseInt( entry.getValue().toString() );
+			if( cantidad > 0 ){
+				ItemBL itemBL = new ItemBL( entry.getKey(), cantidad );
+				listaCompras.add( itemBL );
+			}
 		}
 	}
 
@@ -145,11 +182,11 @@ public class MainActivity extends AppCompatActivity{
 	private void ToggleListView(){
 		if( listViewTotal.getVisibility() == View.VISIBLE ){
 			listViewTotal.setVisibility( View.INVISIBLE );
-			listViewCompras.setVisibility( View.VISIBLE );
+			mRecyclerCompras.setVisibility( View.VISIBLE );
 			getSupportActionBar().setTitle( R.string.app_name );
 		}else{
 			listViewTotal.setVisibility( View.VISIBLE );
-			listViewCompras.setVisibility( View.INVISIBLE );
+			mRecyclerCompras.setVisibility( View.INVISIBLE );
 			getSupportActionBar().setTitle( R.string.listaTotal );
 		}
 
@@ -160,36 +197,51 @@ public class MainActivity extends AppCompatActivity{
 	protected void onActivityResult( int requestCode, int resultCode, Intent data ){
 		switch( requestCode ){
 			case REQ_ADD_ITEM:
+				if( resultCode == RESULT_OK ){
+					ItemBL newItem = (ItemBL) data.getSerializableExtra( "itemBL" );
+					newItem.add( MainActivity.this );
+				}
 			case REQ_EDIT_ITEM:
 				if( resultCode == RESULT_OK ){
-					String descripcion = data.getStringExtra( "descripcion" );
-					Boolean bListaCompras = data.getBooleanExtra( "listacompras", false );
-					int cantidad = data.getIntExtra( "cantidad", 0 );
-					SharedPreferences.Editor editor = compras.edit();
-					editor.putBoolean( descripcion, bListaCompras );
+					ItemBL editedItem = ( ItemBL ) data.getSerializableExtra( "itemBL" );
+//					SharedPreferences.Editor editor = compras.edit();
+//					editor.putInt( itemBL.getDescripcion(), itemBL.getCantidad() );
 					if( requestCode == REQ_EDIT_ITEM ){
 						String descripcionAnt = data.getStringExtra( "descripcionant" );
-						editor.remove( descripcionAnt );
+						editedItem.modify( MainActivity.this, data.getStringExtra( "descripcionant" ) );
+//						editor.remove( descripcionAnt );
 						listaTotal.remove( descripcionAnt );
-						listaCompras.remove( descripcionAnt );
+
+						if( listaCompras.indexOf( editedItem ) != SortedList.INVALID_POSITION ){
+							editedItem.deleteFromCompras( MainActivity.this );
+						}
 					}
-					editor.commit();
 
-					AddItemToAdapter( descripcion, listaTotal, adapterTotal );
+					AddItemToAdapterTotal( editedItem.getDescripcion(), listaTotal, adapterTotal );
 
-					if( bListaCompras ){
-						AddItemToAdapter( descripcion, listaCompras, adapterCompras );
+					if( data.getBooleanExtra( "listacompras", false ) ){
+						AddItemToAdapterCompras( editedItem );
 						ToggleListView();
 					}
 				}
 		}
 	}
 
-	private void AddItemToAdapter( String item, List< String > lista, ArrayAdapter< String > adapter ){
+	private void AddItemToAdapterTotal( String item, List< String > lista, ArrayAdapter< String > adapter ){
 		if( !lista.contains( item ) ){
 			lista.add( item );
 			Toast.makeText( MainActivity.this, item + " " + getString( R.string.itemAgregado ), Toast.LENGTH_SHORT ).show();
 			OrdenarAdapter( adapter );
+		}else{
+			Toast.makeText( MainActivity.this, R.string.itemYaExiste, Toast.LENGTH_SHORT ).show();
+		}
+	}
+
+	private void AddItemToAdapterCompras( ItemBL itemBL ){
+		if( !listaCompras.contains( itemBL ) ){
+			listaCompras.add( itemBL );
+			Toast.makeText( MainActivity.this, itemBL.getDescripcion() + " " + getString( R.string.itemAgregado ), Toast.LENGTH_SHORT ).show();
+//			OrdenarAdapterCompras();
 		}else{
 			Toast.makeText( MainActivity.this, R.string.itemYaExiste, Toast.LENGTH_SHORT ).show();
 		}

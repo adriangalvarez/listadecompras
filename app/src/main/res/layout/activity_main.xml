@@ -8,13 +8,13 @@
     tools:context="android.adriangalvarez.listadecompras.Activities.MainActivity"
     android:background="@color/colorPrimary">
 
-    <ListView
-        android:id="@+id/list_item_compras"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_compras"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/primary_light">
 
-    </ListView>
+    </android.support.v7.widget.RecyclerView>
 
     <ListView
         android:id="@+id/list_item_total"

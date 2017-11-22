@@ -1,24 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="10dp"
+    android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/editTextCantidad"
-            android:layout_width="0dp"
-            android:layout_weight=".1"
-            android:layout_height="wrap_content"
-            android:text="1"/>
+    <TextView
+        android:id="@+id/textViewCantidad"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:layout_weight=".1"
+        android:text="A"
+        android:textSize="20sp"
+    />
 
-        <TextView
-            android:id="@+id/editTextDescripcion"
-            android:layout_width="0dp"
-            android:layout_weight=".9"
-            android:layout_height="wrap_content"
-            android:text="Item"/>
+    <TextView
+        android:id="@+id/textViewDescripcion"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:layout_weight=".8"
+        android:text="Item"
+        android:textSize="20sp"/>
 
-    </LinearLayout>
-</RelativeLayout>
+    <ImageButton
+        android:id="@+id/imageAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_weight=".1"
+        app:srcCompat="@android:drawable/ic_input_add"/>
+
+</LinearLayout>

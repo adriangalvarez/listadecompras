@@ -26,6 +26,7 @@
 
         <EditText
             android:id="@+id/editTextDescripcion"
+            android:inputType="textCapSentences"
             android:layout_width="250dp"
             android:layout_height="45dp"
             android:layout_alignTop="@+id/textView"
@@ -65,7 +66,7 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/buttonAdd"
+        android:id="@+id/buttonAccept"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -81,7 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/buttonAdd"
+        android:layout_alignTop="@+id/buttonAccept"
         android:background="@color/colorAccent"
         android:textColor="@color/primary_text"
         android:layout_marginRight="10dp"

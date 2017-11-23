@@ -2,6 +2,7 @@
     <string name="app_name">Lista de Compras</string>
     <string name="listaTotal">Lista Total</string>
     <string name="buttonAdd">Agregar ítem</string>
+    <string name="buttonShare">Compartir...</string>
     <string name="addItemActivityTitle">Agregar ítem</string>
     <string name="addItemActivityTitleEdit">Editar ítem</string>
     <string name="addItemActivityTvAddItem">Descripción</string>

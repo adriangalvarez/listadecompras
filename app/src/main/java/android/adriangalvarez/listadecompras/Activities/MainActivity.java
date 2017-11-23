@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity{
 	private ArrayAdapter< String > adapterTotal;
 
 	private Button buttonAdd;
+	private Button buttonShare;
 
 	private final int REQ_ADD_ITEM = 1;
 	private final int REQ_EDIT_ITEM = 2;
@@ -124,7 +125,25 @@ public class MainActivity extends AppCompatActivity{
 				startActivityForResult( intent, REQ_ADD_ITEM );
 			}
 		} );
-		buttonAdd.setVisibility( View.INVISIBLE );
+
+		buttonShare = findViewById( R.id.buttonShare );
+		buttonShare.setOnClickListener( new View.OnClickListener(){
+			@Override
+			public void onClick( View v ){
+				Intent intentShare = new Intent( Intent.ACTION_SEND );
+				intentShare.setType( "text/plain" );
+				intentShare.putExtra( Intent.EXTRA_TEXT, GenerarListaComprasToShare() );
+				startActivity( Intent.createChooser( intentShare, "Enviar por..." ) );
+			}
+		} );
+
+	}
+
+	private String GenerarListaComprasToShare(){
+		StringBuilder compartir = new StringBuilder( "" );
+		for( ItemBL temp : listaCompras )
+			compartir.append( String.valueOf( temp.getCantidad() ) + " " + temp.getDescripcion() + "\n" );
+		return compartir.toString();
 	}
 
 	private void OrdenarAdapterCompras(){
@@ -190,6 +209,7 @@ public class MainActivity extends AppCompatActivity{
 		}
 
 		buttonAdd.setVisibility( listViewTotal.getVisibility() );
+		buttonShare.setVisibility( mRecyclerCompras.getVisibility() );
 	}
 
 	@Override

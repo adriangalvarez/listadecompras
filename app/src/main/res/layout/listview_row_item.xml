@@ -10,27 +10,28 @@
     <TextView
         android:id="@+id/textViewCantidad"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="30dp"
         android:gravity="center_vertical"
-        android:layout_weight=".1"
+        android:layout_weight="1"
         android:text="A"
-        android:textSize="20sp"
+        android:textSize="17sp"
     />
 
     <TextView
         android:id="@+id/textViewDescripcion"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_weight=".8"
+        android:layout_weight="8.5"
         android:text="Item"
-        android:textSize="20sp"/>
+        android:textSize="17sp"/>
 
     <ImageButton
         android:id="@+id/imageAdd"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_weight=".1"
+        android:layout_height="30dp"
+        android:layout_weight=".5"
+        android:background="@color/primary_light"
         app:srcCompat="@android:drawable/ic_input_add"/>
 
 </LinearLayout>

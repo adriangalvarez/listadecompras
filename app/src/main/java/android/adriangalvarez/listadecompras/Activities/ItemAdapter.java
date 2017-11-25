@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 /**
- * Created by Adrian on 13/11/2017.
+ * Created by adriangalvarez on 13/11/2017.
  */
 
 public class ItemAdapter extends RecyclerView.Adapter< ItemAdapter.ViewHolder >{

@@ -2,9 +2,6 @@ package android.adriangalvarez.listadecompras.Activities;
 
 import android.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import android.adriangalvarez.listadecompras.R;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;

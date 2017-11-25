@@ -29,10 +29,10 @@
             android:inputType="textCapSentences"
             android:layout_width="250dp"
             android:layout_height="45dp"
-            android:layout_alignTop="@+id/textView"
+            android:layout_alignBaseline="@+id/textView"
             android:layout_marginStart="18dp"
             android:layout_toEndOf="@+id/textView"
-            android:tooltipText="@string/addItemActivityEtAddItemTooltip"/>
+            android:hint="@string/addItemActivityEtAddItemTooltip"/>
 
         <CheckBox
             android:id="@+id/checkBoxListaCompras"
@@ -40,30 +40,30 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/editTextDescripcion"
             android:layout_below="@+id/editTextDescripcion"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="13dp"
             android:text="@string/addItemActivityCbListaCompras"/>
-    </RelativeLayout>
 
-    <Button
-        android:id="@+id/buttonAccept"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:background="@color/colorAccent"
-        android:textColor="@color/primary_text"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="@string/buttonAceptar"/>
+        <Button
+            android:id="@+id/buttonAccept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/checkBoxListaCompras"
+            android:layout_below="@+id/checkBoxListaCompras"
+            android:layout_marginTop="13dp"
+            android:background="@color/colorAccent"
+            android:text="@string/buttonAceptar"
+            android:textColor="@color/primary_text"/>
+    </RelativeLayout>
 
     <Button
         android:id="@+id/buttonCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/buttonAccept"
-        android:background="@color/colorAccent"
-        android:textColor="@color/primary_text"
+        android:layout_marginBottom="10dp"
         android:layout_marginRight="10dp"
-        android:text="@string/buttonCancelar"/>
+        android:background="@color/colorAccent"
+        android:text="@string/buttonCancelar"
+        android:textColor="@color/primary_text"/>
 </RelativeLayout>

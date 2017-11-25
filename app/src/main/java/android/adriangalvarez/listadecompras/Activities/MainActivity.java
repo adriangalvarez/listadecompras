@@ -58,14 +58,14 @@ public class MainActivity extends AppCompatActivity{
 			@Override
 			public void onItemClick( ItemBL itemBL, int position ){
 				listaCompras.remove( itemBL );
-				mAdapterCompras.notifyDataSetChanged();
+				mAdapterCompras.notifyItemRemoved( position );
 				itemBL.deleteFromCompras( MainActivity.this );
 			}
 
 			@Override
 			public void onItemAddClick( ItemBL itemBL, int position ){
 				itemBL.addCantidad( MainActivity.this );
-				mAdapterCompras.notifyDataSetChanged();
+				mAdapterCompras.notifyItemChanged( position );
 			}
 		} );
 
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity{
 				if( !listaCompras.contains( itemBL ) ){
 					listaCompras.add( itemBL );
 					Toast.makeText( MainActivity.this, itemBL.getDescripcion() + " " + getString( R.string.itemAgregado ), Toast.LENGTH_SHORT ).show();
-					mAdapterCompras.notifyDataSetChanged();
+//					mAdapterCompras.notifyDataSetChanged();
 					OrdenarAdapterCompras();
 				}else{
 					Toast.makeText( MainActivity.this, R.string.itemYaExiste, Toast.LENGTH_SHORT ).show();

@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity{
 	private ArrayAdapter< String > adapterTotal;
 
 	private Button buttonAdd;
-	private Button buttonShare;
+	private ImageButton buttonShare;
 
 	private final int REQ_ADD_ITEM = 1;
 	private final int REQ_EDIT_ITEM = 2;

@@ -43,15 +43,15 @@
         android:padding="5dp"
         android:visibility="invisible"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/buttonShare"
-        android:text="@string/buttonShare"
+        android:layout_marginLeft="10dp"
+        android:src="@android:drawable/ic_menu_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/colorAccent"
         android:textColor="@color/primary_text"
-        android:layout_marginLeft="10dp"
         android:padding="5dp"
         android:layout_marginBottom="10dp"/>
 

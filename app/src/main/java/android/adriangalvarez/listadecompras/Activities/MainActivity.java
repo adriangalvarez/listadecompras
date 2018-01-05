@@ -3,6 +3,7 @@ package android.adriangalvarez.listadecompras.Activities;
 import android.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import android.adriangalvarez.listadecompras.R;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,8 +36,8 @@ public class MainActivity extends AppCompatActivity{
 	private ListView listViewTotal;
 	private ArrayAdapter< String > adapterTotal;
 
-	private Button buttonAdd;
-	private ImageButton buttonShare;
+	private FloatingActionButton buttonAdd;
+	private FloatingActionButton buttonShare;
 
 	private final int REQ_ADD_ITEM = 1;
 	private final int REQ_EDIT_ITEM = 2;

@@ -33,6 +33,6 @@
         android:layout_height="35dp"
         android:layout_weight=".5"
         android:background="@color/primary_light"
-        app:srcCompat="@android:drawable/ic_input_add"/>
+        android:src="@android:drawable/ic_input_add"/>
 
 </LinearLayout>

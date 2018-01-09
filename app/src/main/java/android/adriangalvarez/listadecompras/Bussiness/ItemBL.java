@@ -1,9 +1,7 @@
 package android.adriangalvarez.listadecompras.Bussiness;
 
-import android.adriangalvarez.listadecompras.Activities.ItemAdapter;
 import android.adriangalvarez.listadecompras.Data.ItemDL;
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import java.io.Serializable;
 import java.util.Map;

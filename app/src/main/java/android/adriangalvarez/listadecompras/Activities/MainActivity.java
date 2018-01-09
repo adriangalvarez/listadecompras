@@ -1,5 +1,7 @@
 package android.adriangalvarez.listadecompras.Activities;
 
+import android.adriangalvarez.listadecompras.Adapters.ItemAdapter;
+import android.adriangalvarez.listadecompras.Adapters.TotalItemAdapter;
 import android.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import android.adriangalvarez.listadecompras.R;
 import android.content.Intent;
@@ -12,11 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -33,8 +31,9 @@ public class MainActivity extends AppCompatActivity{
 	private RecyclerView.LayoutManager mLayoutManager;
 
 	private List< String > listaTotal;
-	private ListView listViewTotal;
-	private ArrayAdapter< String > adapterTotal;
+	private RecyclerView mRecyclerTotal;
+	private RecyclerView.LayoutManager mLayoutManagerTotal;
+	private TotalItemAdapter mAdapterTotal;
 
 	private FloatingActionButton buttonAdd;
 	private FloatingActionButton buttonShare;
@@ -75,34 +74,11 @@ public class MainActivity extends AppCompatActivity{
 		mRecyclerCompras.setLayoutManager( mLayoutManager );
 		mRecyclerCompras.setAdapter( mAdapterCompras );
 
-		listViewTotal = findViewById( R.id.list_item_total );
-		adapterTotal = new ArrayAdapter<>( this, android.R.layout.simple_list_item_1, listaTotal );
-		OrdenarAdapter( adapterTotal );
-		listViewTotal.setAdapter( adapterTotal );
-		listViewTotal.setVisibility( View.INVISIBLE );
-
-		listViewTotal.setOnItemClickListener( new AdapterView.OnItemClickListener(){
+		mRecyclerTotal = findViewById( R.id.recycler_total );
+		mLayoutManagerTotal = new LinearLayoutManager( MainActivity.this );
+		mAdapterTotal = new TotalItemAdapter( R.layout.total_row_item, listaTotal, new TotalItemAdapter.OnItemClickListener(){
 			@Override
-			public void onItemClick( AdapterView< ? > parent, View view, int position, long id ){
-				ItemBL itemBL = new ItemBL( listaTotal.get( position ), 1 );
-				if( !listaCompras.contains( itemBL ) ){
-					listaCompras.add( itemBL );
-					Toast.makeText( MainActivity.this, itemBL.getDescripcion() + " " + getString( R.string.itemAgregado ), Toast.LENGTH_SHORT ).show();
-//					mAdapterCompras.notifyDataSetChanged();
-					OrdenarAdapterCompras();
-				}else{
-					Toast.makeText( MainActivity.this, R.string.itemYaExiste, Toast.LENGTH_SHORT ).show();
-				}
-
-				itemBL.setCantidad( 1 );
-				itemBL.add( MainActivity.this );
-				ToggleListView();
-			}
-		} );
-
-		listViewTotal.setOnItemLongClickListener( new AdapterView.OnItemLongClickListener(){
-			@Override
-			public boolean onItemLongClick( AdapterView< ? > parent, View view, int position, long id ){
+			public void OnItemClickListener( String descripcion, int position ){
 				Intent intent = new Intent( MainActivity.this, AddItemActivity.class );
 				intent.putExtra( "isEditing", true );
 
@@ -114,9 +90,29 @@ public class MainActivity extends AppCompatActivity{
 					intent.putExtra( "listacomprasant", false );
 				}
 				startActivityForResult( intent, REQ_EDIT_ITEM );
-				return true;
 			}
+
+			@Override
+			public void OnItemClickAdd( String descripcion, int position ){
+				ItemBL itemBL = new ItemBL( listaTotal.get( position ), 1 );
+				if( !listaCompras.contains( itemBL ) ){
+					listaCompras.add( itemBL );
+					Toast.makeText( MainActivity.this, itemBL.getDescripcion() + " " + getString( R.string.itemAgregado ), Toast.LENGTH_SHORT ).show();
+					OrdenarAdapterCompras();
+				}else{
+					Toast.makeText( MainActivity.this, R.string.itemYaExiste, Toast.LENGTH_SHORT ).show();
+				}
+
+				itemBL.add( MainActivity.this );
+				ToggleListView();
+			}
+
 		} );
+
+		OrdenarAdapterTotal();
+		mRecyclerTotal.setLayoutManager( mLayoutManagerTotal );
+		mRecyclerTotal.setAdapter( mAdapterTotal );
+		mRecyclerTotal.setVisibility( View.INVISIBLE );
 
 		buttonAdd = findViewById( R.id.buttonAdd);
 		buttonAdd.setOnClickListener( new View.OnClickListener(){
@@ -138,7 +134,6 @@ public class MainActivity extends AppCompatActivity{
 				startActivity( Intent.createChooser( intentShare, "Enviar por..." ) );
 			}
 		} );
-
 	}
 
 	private String GenerarListaComprasToShare(){
@@ -158,13 +153,14 @@ public class MainActivity extends AppCompatActivity{
 		mAdapterCompras.notifyDataSetChanged();
 	}
 
-	private void OrdenarAdapter( ArrayAdapter< String > adapter ){
-		adapter.sort( new Comparator< String >(){
+	private void OrdenarAdapterTotal(){
+		Collections.sort( listaTotal, new Comparator< String >(){
 			@Override
 			public int compare( String o1, String o2 ){
 				return o1.compareTo( o2 );
 			}
 		} );
+		mAdapterTotal.notifyDataSetChanged();
 	}
 
 	private void InitListaCompras(){
@@ -200,17 +196,17 @@ public class MainActivity extends AppCompatActivity{
 	}
 
 	private void ToggleListView(){
-		if( listViewTotal.getVisibility() == View.VISIBLE ){
-			listViewTotal.setVisibility( View.INVISIBLE );
+		if( mRecyclerTotal.getVisibility() == View.VISIBLE ){
+			mRecyclerTotal.setVisibility( View.INVISIBLE );
 			mRecyclerCompras.setVisibility( View.VISIBLE );
 			getSupportActionBar().setTitle( R.string.app_name );
 		}else{
-			listViewTotal.setVisibility( View.VISIBLE );
+			mRecyclerTotal.setVisibility( View.VISIBLE );
 			mRecyclerCompras.setVisibility( View.INVISIBLE );
 			getSupportActionBar().setTitle( R.string.listaTotal );
 		}
 
-		buttonAdd.setVisibility( listViewTotal.getVisibility() );
+		buttonAdd.setVisibility( mRecyclerTotal.getVisibility() );
 		buttonShare.setVisibility( mRecyclerCompras.getVisibility() );
 	}
 
@@ -235,7 +231,7 @@ public class MainActivity extends AppCompatActivity{
 						}
 					}
 
-					AddItemToAdapterTotal( editedItem.getDescripcion(), listaTotal, adapterTotal );
+					AddItemToAdapterTotal( editedItem.getDescripcion() );
 
 					if( data.getBooleanExtra( "listacompras", false ) ){
 						AddItemToAdapterCompras( editedItem );
@@ -245,11 +241,11 @@ public class MainActivity extends AppCompatActivity{
 		}
 	}
 
-	private void AddItemToAdapterTotal( String item, List< String > lista, ArrayAdapter< String > adapter ){
-		if( !lista.contains( item ) ){
-			lista.add( item );
+	private void AddItemToAdapterTotal( String item ){
+		if( !listaTotal.contains( item ) ){
+			listaTotal.add( item );
 			Toast.makeText( MainActivity.this, item + " " + getString( R.string.itemAgregado ), Toast.LENGTH_SHORT ).show();
-			OrdenarAdapter( adapter );
+			OrdenarAdapterTotal();
 		}else{
 			Toast.makeText( MainActivity.this, R.string.itemYaExiste, Toast.LENGTH_SHORT ).show();
 		}

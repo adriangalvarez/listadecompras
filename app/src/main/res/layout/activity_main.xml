@@ -18,14 +18,15 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <ListView
-        android:id="@+id/list_item_total"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_total"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:background="@color/primary_light"
-    />
+        android:background="@color/primary_light">
+
+    </android.support.v7.widget.RecyclerView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/buttonAdd"

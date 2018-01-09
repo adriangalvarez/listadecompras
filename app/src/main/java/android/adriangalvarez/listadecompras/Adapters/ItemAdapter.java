@@ -1,4 +1,4 @@
-package android.adriangalvarez.listadecompras.Activities;
+package android.adriangalvarez.listadecompras.Adapters;
 
 import android.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import android.adriangalvarez.listadecompras.R;
@@ -36,8 +36,7 @@ public class ItemAdapter extends RecyclerView.Adapter< ItemAdapter.ViewHolder >{
 	@Override
 	public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType ){
 		View v = LayoutInflater.from( parent.getContext() ).inflate( mLayout, parent, false );
-		ViewHolder vh = new ViewHolder( v );
-		return vh;
+		return new ViewHolder( v );
 	}
 
 	@Override

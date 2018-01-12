@@ -15,14 +15,13 @@
         android:layout_weight="9.5"
         android:text="Item"
         android:paddingTop="5dp"
+        android:textStyle="bold"
         android:textSize="17sp"/>
 
     <ImageButton
         android:id="@+id/imageEdit"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
-        android:layout_weight=".5"
-        android:background="@color/primary_light"
-        android:src="@android:drawable/ic_menu_edit"/>
+        android:background="@android:drawable/ic_menu_edit"/>
 
 </LinearLayout>

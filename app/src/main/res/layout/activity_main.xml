@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activities.MainActivity"
-    android:background="@color/colorPrimary">
+    android:background="@drawable/shopping_cart_bg">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_compras"
@@ -14,9 +14,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:background="@color/primary_light">
-
-    </android.support.v7.widget.RecyclerView>
+        />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_total"
@@ -24,9 +22,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:background="@color/primary_light">
-
-    </android.support.v7.widget.RecyclerView>
+        />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/buttonAdd"

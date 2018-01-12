@@ -4,17 +4,22 @@ import android.adriangalvarez.listadecompras.Adapters.ItemAdapter;
 import android.adriangalvarez.listadecompras.Adapters.TotalItemAdapter;
 import android.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import android.adriangalvarez.listadecompras.R;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -37,9 +42,6 @@ public class MainActivity extends AppCompatActivity{
 
 	private FloatingActionButton buttonAdd;
 	private FloatingActionButton buttonShare;
-
-	private final int REQ_ADD_ITEM = 1;
-	private final int REQ_EDIT_ITEM = 2;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ){
@@ -79,17 +81,7 @@ public class MainActivity extends AppCompatActivity{
 		mAdapterTotal = new TotalItemAdapter( R.layout.total_row_item, listaTotal, new TotalItemAdapter.OnItemClickListener(){
 			@Override
 			public void OnItemClickListener( String descripcion, int position ){
-				Intent intent = new Intent( MainActivity.this, AddItemActivity.class );
-				intent.putExtra( "isEditing", true );
-
-				ItemBL itemBLAnt = new ItemBL( listaTotal.get( position ) );
-				intent.putExtra( "descripcionant", itemBLAnt.getDescripcion() );
-				if( listaCompras.contains( itemBLAnt ) ){
-					intent.putExtra( "listacomprasant", true );
-				}else{
-					intent.putExtra( "listacomprasant", false );
-				}
-				startActivityForResult( intent, REQ_EDIT_ITEM );
+				AlertDialogAddEditItem( descripcion,  position, true );
 			}
 
 			@Override
@@ -118,9 +110,7 @@ public class MainActivity extends AppCompatActivity{
 		buttonAdd.setOnClickListener( new View.OnClickListener(){
 			@Override
 			public void onClick( View v ){
-				Intent intent = new Intent( MainActivity.this, AddItemActivity.class );
-				intent.putExtra( "isEditing", false );
-				startActivityForResult( intent, REQ_ADD_ITEM );
+				AlertDialogAddEditItem( "", -1, false );
 			}
 		} );
 
@@ -134,6 +124,53 @@ public class MainActivity extends AppCompatActivity{
 				startActivity( Intent.createChooser( intentShare, "Enviar por..." ) );
 			}
 		} );
+	}
+
+	private void AlertDialogAddEditItem( final String descripcion, int position, final boolean isEditing ){
+		AlertDialog.Builder builder = new AlertDialog.Builder( MainActivity.this );
+		View view = LayoutInflater.from( MainActivity.this ).inflate( R.layout.dia_add_edit_item, null );
+
+		final CheckBox checkBoxListaCompras;
+		final EditText editTextItem = view.findViewById( R.id.editTextDescripcionItem );
+		boolean cancelarAlert = false;
+
+		if( isEditing ){
+			ItemBL itemBLAnt = new ItemBL( listaTotal.get( position ) );
+			if( listaCompras.contains( itemBLAnt ) ){
+				cancelarAlert = true;
+				Toast.makeText( MainActivity.this, R.string.errorItemEnListaCompras, Toast.LENGTH_SHORT ).show();
+			}
+			else{
+				editTextItem.setText( descripcion );
+				builder.setTitle( R.string.addItemActivityTitleEdit );
+			}
+		}else
+			builder.setTitle( R.string.addItemActivityTitle );
+
+		if( !cancelarAlert ){
+			checkBoxListaCompras = view.findViewById( R.id.checkBoxListaComprasItem );
+
+			editTextItem.setHint( R.string.addItemActivityTvAddItem );
+
+			builder.setView( view );
+			builder.setPositiveButton( R.string.buttonAceptar, new DialogInterface.OnClickListener(){
+				@Override
+				public void onClick( DialogInterface dialog, int which ){
+					String descripcionNueva = editTextItem.getText().toString();
+					if( descripcionNueva.length() == 0 )
+						Toast.makeText( MainActivity.this, R.string.errorDescripcionVacia, Toast.LENGTH_SHORT ).show();
+					else{
+						int iCant = 0;
+						if( checkBoxListaCompras.isChecked() )
+							iCant = 1;
+						ItemBL newItem = new ItemBL( descripcionNueva, iCant );
+						AddItemToAdapterTotal( newItem, isEditing, descripcion );
+					}
+				}
+			} );
+
+			builder.show();
+		}
 	}
 
 	private String GenerarListaComprasToShare(){
@@ -210,44 +247,28 @@ public class MainActivity extends AppCompatActivity{
 		buttonShare.setVisibility( mRecyclerCompras.getVisibility() );
 	}
 
-	@Override
-	protected void onActivityResult( int requestCode, int resultCode, Intent data ){
-		switch( requestCode ){
-			case REQ_ADD_ITEM:
-				if( resultCode == RESULT_OK ){
-					ItemBL newItem = (ItemBL) data.getSerializableExtra( "itemBL" );
-					newItem.add( MainActivity.this );
-				}
-			case REQ_EDIT_ITEM:
-				if( resultCode == RESULT_OK ){
-					String descripcionAnt = data.getStringExtra( "descripcionant" );
-					ItemBL itemAnt = new ItemBL( descripcionAnt );
-					if( listaCompras.contains( itemAnt ) ){
-						listaCompras.remove( itemAnt );
-					}
+	private void AddItemToAdapterTotal( ItemBL item, boolean isEditing, String descripcionAnt ){
+		String descripcion = item.getDescripcion();
+		if( !listaTotal.contains( descripcion ) ){
+			listaTotal.add( descripcion );
+
+			if( isEditing ){
+				item.modify( MainActivity.this, descripcionAnt );
+				if( listaTotal.contains( descripcionAnt ) ){
 					listaTotal.remove( descripcionAnt );
-
-					ItemBL editedItem = ( ItemBL ) data.getSerializableExtra( "itemBL" );
-					editedItem.modify( MainActivity.this, data.getStringExtra( "descripcionant" ) );
-					AddItemToAdapterTotal( editedItem.getDescripcion() );
-
-					if( listaCompras.contains( editedItem ) ){
-						editedItem.deleteFromCompras( MainActivity.this );
-					}
-
-					if( data.getBooleanExtra( "listacompras", false ) ){
-						AddItemToAdapterCompras( editedItem );
-						ToggleListView();
-					}
 				}
-		}
-	}
+			}
+			else
+				item.add( MainActivity.this );
 
-	private void AddItemToAdapterTotal( String item ){
-		if( !listaTotal.contains( item ) ){
-			listaTotal.add( item );
-			Toast.makeText( MainActivity.this, item + " " + getString( R.string.itemAgregado ), Toast.LENGTH_SHORT ).show();
 			OrdenarAdapterTotal();
+
+			if( item.getCantidad() > 0 ){
+				AddItemToAdapterCompras( item );
+				ToggleListView();
+			}
+
+			Toast.makeText( MainActivity.this, descripcion + " " + getString( R.string.itemAgregado ), Toast.LENGTH_SHORT ).show();
 		}else{
 			Toast.makeText( MainActivity.this, R.string.itemYaExiste, Toast.LENGTH_SHORT ).show();
 		}

@@ -11,4 +11,6 @@
     <string name="buttonCancelar">Cancelar</string>
     <string name="itemYaExiste">¡Ya existe ese ítem!</string>
     <string name="itemAgregado">agregado.</string>
+    <string name="errorDescripcionVacia">Debe escribir una descripción para el ítem</string>
+    <string name="errorItemEnListaCompras">No puede editar un ítem que está en la lista de compras</string>
 </resources>

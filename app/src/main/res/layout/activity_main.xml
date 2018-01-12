@@ -31,6 +31,8 @@
         android:src="@android:drawable/ic_input_add"
         android:layout_gravity="bottom|end"
         android:layout_margin="10dp"
+        app:backgroundTint="#000000"
+        android:tint="#FFFFFF"
         android:visibility="invisible"
         />
 
@@ -41,6 +43,8 @@
         android:src="@android:drawable/ic_menu_share"
         android:layout_gravity="bottom|end"
         android:layout_margin="10dp"
+        app:backgroundTint="#000000"
+        android:tint="#FFFFFF"
         />
 
 </FrameLayout>

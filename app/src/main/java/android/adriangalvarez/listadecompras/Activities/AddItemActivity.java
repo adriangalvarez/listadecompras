@@ -58,6 +58,8 @@ public class AddItemActivity extends AppCompatActivity{
 		if( intentReferrer.getBooleanExtra( "isEditing", false ) ){
 			editTextDescripcion.setText( intentReferrer.getStringExtra( "descripcionant" ) );
 			checkBoxListaCompras.setChecked( intentReferrer.getBooleanExtra( "listacomprasant", false ) );
+			if( checkBoxListaCompras.isChecked() )
+				checkBoxListaCompras.setClickable( false );
 			getSupportActionBar().setTitle( R.string.addItemActivityTitleEdit );
 		}else{
 			getSupportActionBar().setTitle( R.string.addItemActivityTitle );

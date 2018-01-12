@@ -220,18 +220,20 @@ public class MainActivity extends AppCompatActivity{
 				}
 			case REQ_EDIT_ITEM:
 				if( resultCode == RESULT_OK ){
-					ItemBL editedItem = ( ItemBL ) data.getSerializableExtra( "itemBL" );
-					if( requestCode == REQ_EDIT_ITEM ){
-						String descripcionAnt = data.getStringExtra( "descripcionant" );
-						editedItem.modify( MainActivity.this, data.getStringExtra( "descripcionant" ) );
-						listaTotal.remove( descripcionAnt );
-
-						if( listaCompras.contains( editedItem ) ){
-							editedItem.deleteFromCompras( MainActivity.this );
-						}
+					String descripcionAnt = data.getStringExtra( "descripcionant" );
+					ItemBL itemAnt = new ItemBL( descripcionAnt );
+					if( listaCompras.contains( itemAnt ) ){
+						listaCompras.remove( itemAnt );
 					}
+					listaTotal.remove( descripcionAnt );
 
+					ItemBL editedItem = ( ItemBL ) data.getSerializableExtra( "itemBL" );
+					editedItem.modify( MainActivity.this, data.getStringExtra( "descripcionant" ) );
 					AddItemToAdapterTotal( editedItem.getDescripcion() );
+
+					if( listaCompras.contains( editedItem ) ){
+						editedItem.deleteFromCompras( MainActivity.this );
+					}
 
 					if( data.getBooleanExtra( "listacompras", false ) ){
 						AddItemToAdapterCompras( editedItem );

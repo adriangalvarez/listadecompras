@@ -1,6 +1,6 @@
-package android.adriangalvarez.listadecompras.Bussiness;
+package com.adriangalvarez.listadecompras.Bussiness;
 
-import android.adriangalvarez.listadecompras.Data.ItemDL;
+import com.adriangalvarez.listadecompras.Data.ItemDL;
 import android.content.Context;
 
 import java.io.Serializable;
@@ -11,6 +11,7 @@ import java.util.Map;
  */
 
 public class ItemBL implements Serializable{
+	public static final String SEPARATOR = "/";
 	private String descripcion;
 	private int cantidad;
 
@@ -68,6 +69,28 @@ public class ItemBL implements Serializable{
 	public static Map<String, ?> getAll( Context context ){
 		ItemDL data = new ItemDL( context );
 		return data.GetAll();
+	}
+
+	public static String getDataForBackup( Context context ){
+		StringBuilder result = new StringBuilder();
+		for( Map.Entry< String, ? > entry : getAll( context ).entrySet() ){
+			result.append( entry.getKey() )
+					.append( SEPARATOR )
+					.append( entry.getValue().toString() )
+					.append( System.lineSeparator() );
+		}
+		return result.toString();
+	}
+
+	public static void getDataFromBackup( Context context, String data ){
+		ItemDL itemDL = new ItemDL( context );
+		itemDL.ClearDDBB();
+		String[] lines = data.split( System.lineSeparator() );
+		for( String items : lines ){
+			String[] keyValue = items.split( SEPARATOR );
+			ItemBL itemTemp = new ItemBL( keyValue[0], Integer.parseInt( keyValue[1] ) );
+			itemTemp.add( context );
+		}
 	}
 
 	public void add( Context context ){

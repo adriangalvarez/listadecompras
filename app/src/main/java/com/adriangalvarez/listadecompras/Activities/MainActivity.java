@@ -1,11 +1,12 @@
-package android.adriangalvarez.listadecompras.Activities;
+package com.adriangalvarez.listadecompras.Activities;
 
-import android.adriangalvarez.listadecompras.Adapters.ItemAdapter;
-import android.adriangalvarez.listadecompras.Adapters.TotalItemAdapter;
-import android.adriangalvarez.listadecompras.Bussiness.ItemBL;
+import com.adriangalvarez.listadecompras.Adapters.ItemAdapter;
+import com.adriangalvarez.listadecompras.Adapters.TotalItemAdapter;
+import com.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import android.adriangalvarez.listadecompras.R;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -17,11 +18,17 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,6 +37,8 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity{
 
+	public static final String BACKUP_FILE = "BBDD.backup";
+	private final String BACKUP_DIR = "/ListaComprasBackUp";
 	private List< ItemBL > listaCompras;
 	private ItemAdapter mAdapterCompras;
 	private RecyclerView mRecyclerCompras;
@@ -53,6 +62,8 @@ public class MainActivity extends AppCompatActivity{
 		actionBar.setDisplayShowHomeEnabled( true );
 		actionBar.setIcon( R.drawable.shoppingcart );
 
+		listaTotal = new ArrayList<>();
+		listaCompras = new ArrayList<>();
 		InitListaCompras();
 
 		mRecyclerCompras = findViewById( R.id.recycler_compras );
@@ -201,9 +212,6 @@ public class MainActivity extends AppCompatActivity{
 	}
 
 	private void InitListaCompras(){
-		listaTotal = new ArrayList<>();
-		listaCompras = new ArrayList<>();
-
 		Map< String, ? > allEntries = ItemBL.getAll( MainActivity.this );
 		for( Map.Entry< String, ? > entry : allEntries.entrySet() ){
 			listaTotal.add( entry.getKey() );
@@ -227,8 +235,86 @@ public class MainActivity extends AppCompatActivity{
 			case R.id.menu_view_total:
 				ToggleListView();
 				return true;
+			case R.id.menu_export_bbdd:
+				ExportBBDD();
+				return true;
+			case R.id.menu_import_bbdd:
+				ImportBBDD();
+				return true;
 			default:
 				return super.onOptionsItemSelected( item );
+		}
+	}
+
+	private void ExportBBDD(){
+		if( Environment.getExternalStorageState().equals( Environment.MEDIA_MOUNTED ) ){
+			try{
+				File file = new File( Environment.getExternalStorageDirectory(), BACKUP_DIR );
+				if( !file.exists() )
+					file.mkdirs();
+				File backupFile = new File( file, BACKUP_FILE );
+				FileWriter fileWriter = new FileWriter( backupFile );
+				fileWriter.append( ItemBL.getDataForBackup( MainActivity.this ) );
+				fileWriter.flush();
+				fileWriter.close();
+
+				Toast.makeText( MainActivity.this, getString( R.string.exportOk ), Toast.LENGTH_SHORT ).show();
+			}catch( FileNotFoundException e ){
+				Toast.makeText( MainActivity.this, getString( R.string.fileNotFound ), Toast.LENGTH_SHORT ).show();
+				e.printStackTrace();
+			}catch( IOException e ){
+				Toast.makeText( MainActivity.this, getString( R.string.errorUnknown ), Toast.LENGTH_SHORT ).show();
+				e.printStackTrace();
+			}
+		}else{
+			Toast.makeText( MainActivity.this, R.string.errorMediaNotMounted , Toast.LENGTH_SHORT ).show();
+		}
+	}
+
+	private void ImportBBDD(){
+		if( Environment.getExternalStorageState().equals( Environment.MEDIA_MOUNTED ) ){
+			FileInputStream inputStream = null;
+			BufferedReader bufferedReader = null;
+			String line = null;
+
+			try{
+				inputStream = new FileInputStream( new File( Environment.getExternalStorageDirectory() + "/" + BACKUP_DIR + "/" + BACKUP_FILE) );
+				InputStreamReader streamReader = new InputStreamReader( inputStream );
+				bufferedReader = new BufferedReader( streamReader );
+				StringBuilder builder = new StringBuilder();
+
+				while( ( line = bufferedReader.readLine() ) != null ){
+					builder.append( line ).append( System.lineSeparator() );
+				}
+
+				ItemBL.getDataFromBackup( MainActivity.this, builder.toString() );
+
+				Toast.makeText( MainActivity.this, getString( R.string.importOk ), Toast.LENGTH_SHORT ).show();
+				listaCompras.clear();
+				listaTotal.clear();
+				InitListaCompras();
+				OrdenarAdapterTotal();
+				OrdenarAdapterCompras();
+			}catch( FileNotFoundException e ){
+				Toast.makeText( MainActivity.this, R.string.fileNotFound, Toast.LENGTH_SHORT ).show();
+			}catch( IOException e ){
+				Toast.makeText( MainActivity.this, R.string.errorUnknown, Toast.LENGTH_SHORT ).show();
+			}finally{
+				if( inputStream != null )
+					try{
+						inputStream.close();
+					}catch( IOException e ){
+						Toast.makeText( MainActivity.this, R.string.errorUnknown, Toast.LENGTH_SHORT ).show();
+					}
+				if( bufferedReader != null )
+					try{
+						bufferedReader.close();
+					}catch( IOException e ){
+						Toast.makeText( MainActivity.this, R.string.errorUnknown, Toast.LENGTH_SHORT ).show();
+					}
+			}
+		}else{
+			Toast.makeText( MainActivity.this, R.string.errorMediaNotMounted, Toast.LENGTH_SHORT ).show();
 		}
 	}
 

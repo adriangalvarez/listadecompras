@@ -1,6 +1,6 @@
-package android.adriangalvarez.listadecompras.Data;
+package com.adriangalvarez.listadecompras.Data;
 
-import android.adriangalvarez.listadecompras.Bussiness.ItemBL;
+import com.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -25,6 +25,12 @@ public class ItemDL{
 	public void Add(ItemBL item){
 		mEditor = mSharedPreferences.edit();
 		mEditor.putInt( item.getDescripcion(), item.getCantidad() );
+		mEditor.commit();
+	}
+
+	public void ClearDDBB(){
+		mEditor = mSharedPreferences.edit();
+		mEditor.clear();
 		mEditor.commit();
 	}
 

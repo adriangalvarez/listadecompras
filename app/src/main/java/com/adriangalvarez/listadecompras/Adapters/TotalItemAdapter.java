@@ -1,4 +1,4 @@
-package android.adriangalvarez.listadecompras.Adapters;
+package com.adriangalvarez.listadecompras.Adapters;
 
 import android.adriangalvarez.listadecompras.R;
 import android.support.v7.widget.RecyclerView;

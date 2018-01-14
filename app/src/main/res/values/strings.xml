@@ -20,4 +20,5 @@
     <string name="exportOk">La exportación de la base de datos ha sido exitosa</string>
     <string name="importOk">La importación a la base de datos ha sido exitosa</string>
     <string name="errorMediaNotMounted">No hay tarjeta SD</string>
+    <string name="changeVisibleList">Cambiar de lista</string>
 </resources>

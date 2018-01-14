@@ -1,6 +1,6 @@
 package com.adriangalvarez.listadecompras.Adapters;
 
-import android.adriangalvarez.listadecompras.R;
+import com.adriangalvarez.listadecompras.R;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;

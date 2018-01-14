@@ -3,7 +3,7 @@ package com.adriangalvarez.listadecompras.Activities;
 import com.adriangalvarez.listadecompras.Adapters.ItemAdapter;
 import com.adriangalvarez.listadecompras.Adapters.TotalItemAdapter;
 import com.adriangalvarez.listadecompras.Bussiness.ItemBL;
-import android.adriangalvarez.listadecompras.R;
+import com.adriangalvarez.listadecompras.R;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;

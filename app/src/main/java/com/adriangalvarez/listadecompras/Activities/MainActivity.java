@@ -37,8 +37,8 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity{
 
-	public static final String BACKUP_FILE = "BBDD.backup";
-	private final String BACKUP_DIR = "/ListaComprasBackUp";
+	public static final String BACKUP_FILE = "ListaDeCompras.backup";
+	private final String BACKUP_DIR = "/ListaDeCompras";
 	private List< ItemBL > listaCompras;
 	private ItemAdapter mAdapterCompras;
 	private RecyclerView mRecyclerCompras;
@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity{
 	private void ExportBBDD(){
 		if( Environment.getExternalStorageState().equals( Environment.MEDIA_MOUNTED ) ){
 			try{
-				File file = new File( Environment.getExternalStorageDirectory(), BACKUP_DIR );
+				File file = new File( Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_DOWNLOADS ), BACKUP_DIR );
 				if( !file.exists() )
 					file.mkdirs();
 				File backupFile = new File( file, BACKUP_FILE );
@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity{
 			String line = null;
 
 			try{
-				inputStream = new FileInputStream( new File( Environment.getExternalStorageDirectory() + "/" + BACKUP_DIR + "/" + BACKUP_FILE) );
+				inputStream = new FileInputStream( new File( Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_DOWNLOADS ) + "/" + BACKUP_DIR + "/" + BACKUP_FILE) );
 				InputStreamReader streamReader = new InputStreamReader( inputStream );
 				bufferedReader = new BufferedReader( streamReader );
 				StringBuilder builder = new StringBuilder();

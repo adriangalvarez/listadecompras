@@ -4,6 +4,8 @@ import com.adriangalvarez.listadecompras.Adapters.ItemAdapter;
 import com.adriangalvarez.listadecompras.Adapters.TotalItemAdapter;
 import com.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import com.adriangalvarez.listadecompras.R;
+
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
@@ -18,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -181,6 +184,9 @@ public class MainActivity extends AppCompatActivity{
 			} );
 
 			builder.show();
+			editTextItem.requestFocus();
+			InputMethodManager imm = (InputMethodManager) getSystemService( Context.INPUT_METHOD_SERVICE);
+			imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 		}
 	}
 

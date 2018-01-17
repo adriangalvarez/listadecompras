@@ -16,7 +16,12 @@
         android:text="Item"
         android:paddingTop="5dp"
         android:textStyle="bold"
-        android:textSize="17sp"/>
+        android:textSize="17sp"
+        android:shadowColor="@color/shadow"
+        android:shadowDx="@dimen/shadowDimension"
+        android:shadowDy="@dimen/shadowDimension"
+        android:shadowRadius="@dimen/shadowRadio"
+        />
 
     <ImageButton
         android:id="@+id/imageEdit"

@@ -21,4 +21,7 @@
     <string name="importOk">La importación a la base de datos ha sido exitosa</string>
     <string name="errorMediaNotMounted">No hay tarjeta SD</string>
     <string name="changeVisibleList">Cambiar de lista</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

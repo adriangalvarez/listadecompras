@@ -71,6 +71,15 @@ public class ItemBL implements Serializable{
 		return data.GetAll();
 	}
 
+	public static boolean existeEnCompras( Context context, String descripcion ){
+		Object cantidad = getAll( context ).get( descripcion );
+		return ( (int) cantidad > 0 );
+	}
+
+	public static boolean existe( Context context, String descripcion ){
+		return getAll( context ).containsKey( descripcion );
+	}
+
 	public static String getDataForBackup( Context context ){
 		StringBuilder result = new StringBuilder();
 		for( Map.Entry< String, ? > entry : getAll( context ).entrySet() ){

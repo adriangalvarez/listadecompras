@@ -1,34 +1,19 @@
 package com.adriangalvarez.listadecompras.Activities;
 
-import com.adriangalvarez.listadecompras.Adapters.ItemAdapter;
 import com.adriangalvarez.listadecompras.Adapters.PagerAdapter;
-import com.adriangalvarez.listadecompras.Adapters.TotalItemAdapter;
 import com.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import com.adriangalvarez.listadecompras.Fragments.ComprasFragment;
 import com.adriangalvarez.listadecompras.Fragments.TotalFragment;
 import com.adriangalvarez.listadecompras.R;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Environment;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -38,11 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements TotalFragment.IOnFragmentInteractionListener{
 
@@ -152,7 +132,10 @@ public class MainActivity extends AppCompatActivity implements TotalFragment.IOn
 				ItemBL.getDataFromBackup( MainActivity.this, builder.toString() );
 
 				Toast.makeText( MainActivity.this, getString( R.string.importOk ), Toast.LENGTH_SHORT ).show();
-				//TODO: Actualizar Fragments
+				ComprasFragment comprasFragment = ( ComprasFragment ) getSupportFragmentManager().getFragments().get( 0 );
+				comprasFragment.ActualizarListaCompras();
+				TotalFragment totalFragment = ( TotalFragment ) getSupportFragmentManager().getFragments().get( 1 );
+				totalFragment.ActualizarListaTotal();
 			}catch( FileNotFoundException e ){
 				Toast.makeText( MainActivity.this, R.string.fileNotFound, Toast.LENGTH_SHORT ).show();
 			}catch( IOException e ){

@@ -99,7 +99,13 @@ public class ComprasFragment extends Fragment{
 		}
 	}
 
-	private void OrdenarAdapterCompras(){
+	public void ActualizarListaCompras(){
+		listaCompras.clear();
+		InitListaCompras();
+		OrdenarAdapterCompras();
+	}
+
+	public void OrdenarAdapterCompras(){
 		Collections.sort( listaCompras, new Comparator< ItemBL >(){
 			@Override
 			public int compare( ItemBL o1, ItemBL o2 ){

@@ -136,6 +136,12 @@ public class TotalFragment extends Fragment{
 		return view;
 	}
 
+	public void ActualizarListaTotal(){
+		listaTotal.clear();
+		InitListaTotal();
+		OrdenarAdapterTotal();
+	}
+
 	private void InitListaTotal(){
 		Map< String, ? > allEntries = ItemBL.getAll( getContext() );
 		for( Map.Entry< String, ? > entry : allEntries.entrySet() ){

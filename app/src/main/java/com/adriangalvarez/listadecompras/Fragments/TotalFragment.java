@@ -132,6 +132,17 @@ public class TotalFragment extends Fragment{
 		OrdenarAdapterTotal();
 		mRecyclerTotal.setLayoutManager( mLayoutManagerTotal );
 		mRecyclerTotal.setAdapter( mAdapterTotal );
+		mRecyclerTotal.addOnScrollListener( new RecyclerView.OnScrollListener(){
+			@Override
+			public void onScrolled( RecyclerView recyclerView, int dx, int dy ){
+				super.onScrolled( recyclerView, dx, dy );
+				if( dy > 0 && buttonAdd.getVisibility() == View.VISIBLE )
+					buttonAdd.hide();
+				else
+					if( dy < 0 && buttonAdd.getVisibility() != View.VISIBLE )
+						buttonAdd.show();
+			}
+		} );
 
 		return view;
 	}

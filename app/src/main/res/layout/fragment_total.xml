@@ -1,28 +1,41 @@
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Fragments.TotalFragment"
     android:background="@drawable/shopping_cart_bg">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_total"
+    <android.support.v7.widget.SearchView
+        android:id="@+id/searchItem"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="50dp"
+        app:queryHint="@string/queryHint"
+        android:background="@color/colorPrimary"
+        android:layout_margin="10dp"
+        app:iconifiedByDefault="false"
         />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/buttonAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_input_add"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="50dp"
-        app:backgroundTint="#000000"
-        android:tint="#FFFFFF"
-        />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_total"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/buttonAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_input_add"
+            android:layout_gravity="bottom|end"
+            app:backgroundTint="#000000"
+            android:tint="#FFFFFF"
+            />
+    </FrameLayout>
+</LinearLayout>

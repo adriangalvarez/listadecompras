@@ -33,6 +33,7 @@ public class TotalFragment extends Fragment{
 	private RecyclerView.LayoutManager mLayoutManagerTotal;
 	private TotalItemAdapter mAdapterTotal;
 
+	private android.support.v7.widget.SearchView searchItem;
 	private FloatingActionButton buttonAdd;
 
 	public TotalFragment(){
@@ -56,6 +57,20 @@ public class TotalFragment extends Fragment{
 
 		// Inflate the layout for this fragment
 		View view = inflater.inflate( R.layout.fragment_total, container, false );
+
+		searchItem = view.findViewById( R.id.searchItem );
+		searchItem.setOnQueryTextListener( new android.support.v7.widget.SearchView.OnQueryTextListener(){
+			@Override
+			public boolean onQueryTextSubmit( String query ){
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange( String newText ){
+				mAdapterTotal.getFilter().filter( newText );
+				return false;
+			}
+		} );
 
 		buttonAdd = view.findViewById( R.id.buttonAdd);
 		buttonAdd.setOnClickListener( new View.OnClickListener(){

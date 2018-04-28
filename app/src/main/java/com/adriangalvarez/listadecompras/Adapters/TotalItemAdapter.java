@@ -5,25 +5,37 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by adriangalvarez on 09/01/2018.
  */
 
-public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.ViewHolder >{
+public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.ViewHolder > implements Filterable{
 
 	private int mLayout;
 	private List< String > mLista;
 	private OnItemClickListener mOnItemClickListener;
+	private List< String > mListaFiltrada;
+	private ItemFilter mFilter;
 
 	public TotalItemAdapter( int layout, List<String> lista, OnItemClickListener onItemClickListener ){
 		mLayout = layout;
 		mLista = lista;
+		mListaFiltrada = lista;
 		mOnItemClickListener = onItemClickListener;
+		mFilter = new ItemFilter();
+	}
+
+	@Override
+	public Filter getFilter(){
+		return mFilter;
 	}
 
 	public interface OnItemClickListener{
@@ -38,12 +50,12 @@ public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.Vie
 
 	@Override
 	public void onBindViewHolder( ViewHolder holder, int position ){
-		holder.bind( mLista.get( position ), mOnItemClickListener );
+		holder.bind( mListaFiltrada.get( position ), mOnItemClickListener );
 	}
 
 	@Override
 	public int getItemCount(){
-		return mLista.size();
+		return mListaFiltrada.size();
 	}
 
 	public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -71,6 +83,36 @@ public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.Vie
 					listener.OnItemClickListener( descripcion, getAdapterPosition() );
 				}
 			} );
+		}
+	}
+
+	private class ItemFilter extends Filter{
+
+		@Override
+		protected FilterResults performFiltering( CharSequence constraint ){
+			String filterString = constraint.toString().toLowerCase();
+			int count = mLista.size();
+
+			FilterResults results = new FilterResults();
+			ArrayList<String> nlist = new ArrayList<>( count );
+
+			String filterableString;
+			for( int i = 0; i < count ; i++ ){
+				filterableString = mLista.get( i );
+				if( filterableString.toLowerCase().contains( filterString ) )
+					nlist.add( filterableString );
+			}
+
+			results.values = nlist;
+			results.count = nlist.size();
+			return results;
+		}
+
+		@SuppressWarnings( "unchecked" )
+		@Override
+		protected void publishResults( CharSequence constraint, FilterResults results ){
+			mListaFiltrada = ( ArrayList< String> ) results.values;
+			notifyDataSetChanged();
 		}
 	}
 }

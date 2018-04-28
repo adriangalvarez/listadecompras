@@ -23,4 +23,5 @@
     <string name="changeVisibleList">Cambiar de lista</string>
     <string name="tabComprasTitle">COMPRAS</string>
     <string name="tabTotalTitle">TOTAL</string>
+    <string name="queryHint">Buscar ítem</string>
 </resources>

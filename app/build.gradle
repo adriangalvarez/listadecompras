@@ -6,8 +6,8 @@ android {
         applicationId "com.adriangalvarez.listadecompras"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 3
-        versionName "3.0"
+        versionCode 5
+        versionName "3.1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

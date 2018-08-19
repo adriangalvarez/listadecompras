@@ -5,15 +5,23 @@ import com.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import com.adriangalvarez.listadecompras.Fragments.ComprasFragment;
 import com.adriangalvarez.listadecompras.Fragments.TotalFragment;
 import com.adriangalvarez.listadecompras.R;
+import com.adriangalvarez.listadecompras.Utils.AlertDialog;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Environment;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -77,15 +85,42 @@ public class MainActivity extends AppCompatActivity implements TotalFragment.IOn
 	@Override
 	public boolean onOptionsItemSelected( MenuItem item ){
 		switch( item.getItemId() ){
+			case R.id.menu_reset_compras:
+				ResetCompras();
+				break;
 			case R.id.menu_export_bbdd:
 				ExportBBDD();
-				return true;
+				break;
 			case R.id.menu_import_bbdd:
 				ImportBBDD();
-				return true;
+				break;
 			default:
 				return super.onOptionsItemSelected( item );
 		}
+		return true;
+	}
+
+	private void ResetCompras(){
+		android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder( this );
+		builder.setTitle( R.string.reset_compras_alert_title )
+				.setMessage( R.string.reset_compras_alert_msg )
+				.setIcon( android.R.drawable.stat_sys_warning )
+				.setPositiveButton( R.string.buttonAceptar, new DialogInterface.OnClickListener(){
+					@Override
+					public void onClick( DialogInterface dialog, int which ){
+						ItemBL.resetCompras( MainActivity.this );
+						ComprasFragment comprasFragment = ( ComprasFragment ) getSupportFragmentManager().getFragments().get( 0 );
+						comprasFragment.ActualizarListaCompras();
+						Toast.makeText( MainActivity.this, R.string.reset_compras_success, Toast.LENGTH_SHORT ).show();
+					}
+				} )
+				.setNegativeButton( R.string.buttonCancelar, new DialogInterface.OnClickListener(){
+					@Override
+					public void onClick( DialogInterface dialog, int which ){
+						//do nothing
+					}
+				} )
+				.show();
 	}
 
 	private void ExportBBDD(){

@@ -116,4 +116,11 @@ public class ItemBL implements Serializable{
 		ItemDL data = new ItemDL( context );
 		data.Modify( this, descripcionAnterior );
 	}
+
+	public static void resetCompras( Context context ){
+		for( Map.Entry< String, ? > entry : getAll( context ).entrySet() ){
+			ItemBL itemBL = new ItemBL( entry.getKey() );
+			itemBL.deleteFromCompras( context );
+		}
+	}
 }

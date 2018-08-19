@@ -13,6 +13,7 @@
     <string name="itemAgregado">agregado.</string>
     <string name="errorDescripcionVacia">Debe escribir una descripción para el ítem</string>
     <string name="errorItemEnListaCompras">No puede editar un ítem que está en la lista de compras</string>
+    <string name="om_reset_compras">Vaciar lista de compras</string>
     <string name="om_export_bbdd">Exportar BBDD</string>
     <string name="om_import_bbdd">Importar BBDD</string>
     <string name="fileNotFound">Archivo no encontrado</string>
@@ -24,4 +25,7 @@
     <string name="tabComprasTitle">COMPRAS</string>
     <string name="tabTotalTitle">TOTAL</string>
     <string name="queryHint">Buscar ítem</string>
+    <string name="reset_compras_alert_title">Vaciar lista de compras</string>
+    <string name="reset_compras_alert_msg">¿Está seguro que desea vaciar la lista de compras?</string>
+    <string name="reset_compras_success">La lista de compras se ha vaciado con éxito</string>
 </resources>

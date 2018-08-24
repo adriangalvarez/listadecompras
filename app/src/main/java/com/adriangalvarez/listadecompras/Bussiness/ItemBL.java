@@ -2,6 +2,7 @@ package com.adriangalvarez.listadecompras.Bussiness;
 
 import com.adriangalvarez.listadecompras.Database.AppDatabase;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
@@ -23,6 +24,9 @@ public class ItemBL implements Serializable{
 
 	private String descripcion;
 	private int cantidad;
+
+	@ColumnInfo( typeAffinity = ColumnInfo.BLOB)
+	private byte[] imagen;
 
 	public ItemBL(){
 		//Needed for ROOM
@@ -58,6 +62,14 @@ public class ItemBL implements Serializable{
 		this.cantidad = cantidad;
 	}
 
+	public byte[] getImagen(){
+		return imagen;
+	}
+
+	public void setImagen( byte[] imagen ){
+		this.imagen = imagen;
+	}
+
 	@Override
 	public boolean equals( Object obj ){
 		boolean retVal = false;
@@ -79,6 +91,10 @@ public class ItemBL implements Serializable{
 
 	public static List< ItemBL > getAll( Context context ){
 		return AppDatabase.getInstance( context ).getItemDAO().getAll();
+	}
+
+	public static List< ItemBL > getAllCompras( Context context ){
+		return AppDatabase.getInstance( context ).getItemDAO().getAllCompras();
 	}
 
 	public static String getDataForBackup( Context context ){

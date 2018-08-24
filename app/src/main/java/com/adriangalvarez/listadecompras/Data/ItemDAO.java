@@ -27,7 +27,7 @@ public interface ItemDAO{
 	@Query( "Delete from Items" )
 	public void deleteAll();
 
-	@Query( "Select id, descripcion, cantidad from Items" )
+	@Query( "Select id, descripcion, cantidad, imagen from Items" )
 	public List< ItemBL > getAll();
 
 	@Query( "Select id from Items where descripcion = :descripcion" )
@@ -36,7 +36,7 @@ public interface ItemDAO{
 	@Query( "Update Items set cantidad = 0" )
 	public void deleteAllCompras();
 
-	@Query( "Select id, descripcion, cantidad from Items" )
+	@Query( "Select id, descripcion, cantidad, imagen from Items where cantidad > 0" )
 	public List< ItemBL > getAllCompras();
 
 	@Query( "Select count( id ) from Items where id = :id and cantidad > 0" )

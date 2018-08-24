@@ -99,11 +99,7 @@ public class ComprasFragment extends Fragment{
 	}
 
 	private void InitListaCompras(){
-		for( ItemBL entry : ItemBL.getAll( context ) ){
-			if( entry.getCantidad() > 0 ){
-				listaCompras.add( entry );
-			}
-		}
+		listaCompras.addAll( ItemBL.getAllCompras( context ) );
 	}
 
 	public void ActualizarListaCompras(){

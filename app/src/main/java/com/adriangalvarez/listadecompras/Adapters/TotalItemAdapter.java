@@ -95,13 +95,11 @@ public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.Vie
 			int count = mLista.size();
 
 			FilterResults results = new FilterResults();
-			ArrayList<String> nlist = new ArrayList<>( count );
+			List< ItemBL > nlist = new ArrayList<>( count );
 
-			String filterableString;
-			for( int i = 0; i < count ; i++ ){
-				filterableString = mLista.get( i ).getDescripcion();
-				if( filterableString.toLowerCase().contains( filterString ) )
-					nlist.add( filterableString );
+			for( ItemBL itemBL : mLista ){
+				if( itemBL.getDescripcion().toLowerCase().contains( filterString ) )
+					nlist.add( itemBL );
 			}
 
 			results.values = nlist;

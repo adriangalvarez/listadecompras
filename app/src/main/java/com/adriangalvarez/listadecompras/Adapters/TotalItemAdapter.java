@@ -1,5 +1,6 @@
 package com.adriangalvarez.listadecompras.Adapters;
 
+import com.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import com.adriangalvarez.listadecompras.R;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,12 +21,12 @@ import java.util.List;
 public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.ViewHolder > implements Filterable{
 
 	private int mLayout;
-	private List< String > mLista;
+	private List< ItemBL > mLista;
 	private OnItemClickListener mOnItemClickListener;
-	private List< String > mListaFiltrada;
+	private List< ItemBL > mListaFiltrada;
 	private ItemFilter mFilter;
 
-	public TotalItemAdapter( int layout, List<String> lista, OnItemClickListener onItemClickListener ){
+	public TotalItemAdapter( int layout, List< ItemBL > lista, OnItemClickListener onItemClickListener ){
 		mLayout = layout;
 		mLista = lista;
 		mListaFiltrada = lista;
@@ -39,8 +40,8 @@ public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.Vie
 	}
 
 	public interface OnItemClickListener{
-		void OnItemClickListener( String descripcion,  int position );
-		void OnItemClickAdd( String descripcion, int position );
+		void OnItemClickListener( ItemBL itemBL, int position );
+		void OnItemClickAdd( ItemBL itemBL, int position );
 	}
 
 	@Override
@@ -69,18 +70,18 @@ public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.Vie
 			imageButtonEditar = itemView.findViewById( R.id.imageEdit );
 		}
 
-		public void bind( final String descripcion, final OnItemClickListener listener ){
-			textViewDescripcion.setText( descripcion );
+		public void bind( final ItemBL itemBL, final OnItemClickListener listener ){
+			textViewDescripcion.setText( itemBL.getDescripcion() );
 			textViewDescripcion.setOnClickListener( new View.OnClickListener(){
 				@Override
 				public void onClick( View v ){
-					listener.OnItemClickAdd( descripcion, getAdapterPosition() );
+					listener.OnItemClickAdd( itemBL, getAdapterPosition() );
 				}
 			} );
 			imageButtonEditar.setOnClickListener( new View.OnClickListener(){
 				@Override
 				public void onClick( View v ){
-					listener.OnItemClickListener( descripcion, getAdapterPosition() );
+					listener.OnItemClickListener( itemBL, getAdapterPosition() );
 				}
 			} );
 		}
@@ -98,7 +99,7 @@ public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.Vie
 
 			String filterableString;
 			for( int i = 0; i < count ; i++ ){
-				filterableString = mLista.get( i );
+				filterableString = mLista.get( i ).getDescripcion();
 				if( filterableString.toLowerCase().contains( filterString ) )
 					nlist.add( filterableString );
 			}
@@ -111,7 +112,7 @@ public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.Vie
 		@SuppressWarnings( "unchecked" )
 		@Override
 		protected void publishResults( CharSequence constraint, FilterResults results ){
-			mListaFiltrada = ( ArrayList< String> ) results.values;
+			mListaFiltrada = ( ArrayList< ItemBL > ) results.values;
 			notifyDataSetChanged();
 		}
 	}

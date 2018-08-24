@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import com.adriangalvarez.listadecompras.R;
@@ -24,10 +23,10 @@ public class AlertDialog{
 	}
 
 	public interface IAceptar{
-		void Aceptar( String descripcion, int cantidad );
+		void Aceptar( ItemBL item );
 	}
 
-	public void AlertDialogAddEditItem( final Context context, final String descripcion, int position, final boolean isEditing ){
+	public void AlertDialogAddEditItem( final Context context, final ItemBL itemBL, final boolean isEditing ){
 		android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder( context );
 		View view = LayoutInflater.from( context ).inflate( R.layout.dia_add_edit_item, null );
 
@@ -35,7 +34,7 @@ public class AlertDialog{
 		final EditText editTextItem = view.findViewById( R.id.editTextDescripcionItem );
 
 		if( isEditing ){
-			editTextItem.setText( descripcion );
+			editTextItem.setText( itemBL.getDescripcion() );
 			builder.setTitle( R.string.addItemActivityTitleEdit );
 		}else
 			builder.setTitle( R.string.addItemActivityTitle );
@@ -50,7 +49,14 @@ public class AlertDialog{
 				int iCant = 0;
 				if( checkBoxListaCompras.isChecked() )
 					iCant = 1;
-				aceptar.Aceptar( editTextItem.getText().toString(), iCant );
+				ItemBL newItem;
+				if( isEditing ){
+					newItem = itemBL;
+				}else
+					newItem = new ItemBL();
+				newItem.setDescripcion( editTextItem.getText().toString() );
+				newItem.setCantidad( iCant );
+				aceptar.Aceptar( newItem );
 			}
 		} );
 

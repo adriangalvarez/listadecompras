@@ -20,11 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 public class TotalFragment extends Fragment{
 
-	private List< String > listaTotal;
+	private List< ItemBL > listaTotal;
 
 	private Context context;
 	IOnFragmentInteractionListener sendArticulo;
@@ -41,7 +40,7 @@ public class TotalFragment extends Fragment{
 	}
 
 	public interface IOnFragmentInteractionListener{
-		void OnFragmentInteraction( String articulo );
+		void OnFragmentInteraction( ItemBL articulo );
 	}
 
 	@Override
@@ -79,25 +78,25 @@ public class TotalFragment extends Fragment{
 				AlertDialog alertDialog = new AlertDialog();
 				alertDialog.setOnAceptarClickListener( new AlertDialog.IAceptar(){
 					@Override
-					public void Aceptar( String descripcion, int cantidad ){
-						if( descripcion.length() == 0 )
+					public void Aceptar( ItemBL itemBL ){
+						if( itemBL.getDescripcion().length() == 0 )
 							Toast.makeText( context, R.string.errorDescripcionVacia, Toast.LENGTH_SHORT ).show();
 						else{
-							if( ItemBL.existe( context, descripcion ) ){
+							if( ItemBL.existe( context, itemBL.getDescripcion() ) ){
 								Toast.makeText( context, R.string.itemYaExiste, Toast.LENGTH_SHORT ).show();
 							}else{
-								ItemBL newItem = new ItemBL( descripcion, cantidad );
-								newItem.add( context );
-								listaTotal.add( descripcion );
+								ItemBL newItem = new ItemBL( itemBL.getDescripcion(), itemBL.getCantidad() );
+								newItem.setId( newItem.add( context ) );
+								listaTotal.add( newItem );
 								OrdenarAdapterTotal();
-								if( cantidad > 0 ){
-									sendArticulo.OnFragmentInteraction( descripcion );
+								if( newItem.getCantidad() > 0 ){
+									sendArticulo.OnFragmentInteraction( newItem );
 								}
 							}
 						}
 					}
 				} );
-				alertDialog.AlertDialogAddEditItem( context, "", -1, false );
+				alertDialog.AlertDialogAddEditItem( context, null, false );
 				OrdenarAdapterTotal();
 			}
 		} );
@@ -109,38 +108,37 @@ public class TotalFragment extends Fragment{
 		mLayoutManagerTotal = new LinearLayoutManager( context );
 		mAdapterTotal = new TotalItemAdapter( R.layout.total_row_item, listaTotal, new TotalItemAdapter.OnItemClickListener(){
 			@Override
-			public void OnItemClickListener( String descripcion, final int position ){
-				if( ItemBL.existeEnCompras( context,  descripcion )){
+			public void OnItemClickListener( ItemBL itemBL, final int position ){
+				if( ItemBL.existeEnCompras( context, itemBL.getId() ) ){
 					Toast.makeText( context,  R.string.errorItemEnListaCompras, Toast.LENGTH_SHORT).show();
 				}else{
 					AlertDialog alertDialog = new AlertDialog();
 					alertDialog.setOnAceptarClickListener( new AlertDialog.IAceptar(){
 						@Override
-						public void Aceptar( String descripcion, int cantidad ){
-							if( descripcion.length() == 0 )
+						public void Aceptar( ItemBL itemBLinterno ){
+							if( itemBLinterno.getDescripcion().length() == 0 )
 								Toast.makeText( context, R.string.errorDescripcionVacia, Toast.LENGTH_SHORT ).show();
 							else{
-								if( ItemBL.existe( context, descripcion ) ){
+								if( ItemBL.existe( context, itemBLinterno.getDescripcion() ) ){
 									Toast.makeText( context, R.string.itemYaExiste, Toast.LENGTH_SHORT ).show();
 								}else{
-									ItemBL newItem = new ItemBL( descripcion, cantidad );
-									newItem.modify( context, listaTotal.get( position ) );
-									listaTotal.set( position, descripcion );
+									itemBLinterno.modify( context );
+									listaTotal.set( position, itemBLinterno );
 									OrdenarAdapterTotal();
-									if( cantidad > 0 ){
-										sendArticulo.OnFragmentInteraction( descripcion );
+									if( itemBLinterno.getCantidad() > 0 ){
+										sendArticulo.OnFragmentInteraction( itemBLinterno );
 									}
 								}
 							}
 						}
 					} );
-					alertDialog.AlertDialogAddEditItem( context, descripcion,  position, true );
+					alertDialog.AlertDialogAddEditItem( context, itemBL,  true );
 				}
 			}
 
 			@Override
-			public void OnItemClickAdd( String descripcion, int position ){
-				sendArticulo.OnFragmentInteraction( descripcion );
+			public void OnItemClickAdd( ItemBL itemBL, int position ){
+				sendArticulo.OnFragmentInteraction( itemBL );
 			}
 		} );
 
@@ -169,19 +167,17 @@ public class TotalFragment extends Fragment{
 	}
 
 	private void InitListaTotal(){
-		Map< String, ? > allEntries = ItemBL.getAll( getContext() );
-		for( Map.Entry< String, ? > entry : allEntries.entrySet() ){
-			listaTotal.add( entry.getKey() );
-		}
+		listaTotal.addAll( ItemBL.getAll( getContext() ) );
 	}
 
 	private void OrdenarAdapterTotal(){
-		Collections.sort( listaTotal, new Comparator< String >(){
+		Collections.sort( listaTotal, new Comparator< ItemBL >(){
 			@Override
-			public int compare( String o1, String o2 ){
-				return o1.compareTo( o2 );
+			public int compare( ItemBL o1, ItemBL o2 ){
+				return o1.getDescripcion().compareTo( o2.getDescripcion() );
 			}
-		} );
+		});
+
 		mAdapterTotal.notifyDataSetChanged();
 	}
 }

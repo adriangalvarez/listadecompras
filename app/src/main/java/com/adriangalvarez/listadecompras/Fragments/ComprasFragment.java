@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 public class ComprasFragment extends Fragment{
 
@@ -100,12 +99,9 @@ public class ComprasFragment extends Fragment{
 	}
 
 	private void InitListaCompras(){
-		Map< String, ? > allEntries = ItemBL.getAll( context );
-		for( Map.Entry< String, ? > entry : allEntries.entrySet() ){
-			int cantidad = Integer.parseInt( entry.getValue().toString() );
-			if( cantidad > 0 ){
-				ItemBL itemBL = new ItemBL( entry.getKey(), cantidad );
-				listaCompras.add( itemBL );
+		for( ItemBL entry : ItemBL.getAll( context ) ){
+			if( entry.getCantidad() > 0 ){
+				listaCompras.add( entry );
 			}
 		}
 	}
@@ -126,11 +122,11 @@ public class ComprasFragment extends Fragment{
 		mAdapterCompras.notifyDataSetChanged();
 	}
 
-	public void AddItemToAdapterCompras( String articulo ){
-		ItemBL itemBL = new ItemBL( articulo, 1 );
+	public void AddItemToAdapterCompras( ItemBL itemBL ){
 		if( !listaCompras.contains( itemBL ) ){
 			listaCompras.add( itemBL );
-			itemBL.add( context );
+			itemBL.setCantidad( 1 );
+			itemBL.modify( context );
 			Toast.makeText( context, itemBL.getDescripcion() + " " + getString( R.string.itemAgregado ), Toast.LENGTH_SHORT ).show();
 			OrdenarAdapterCompras();
 		}else{

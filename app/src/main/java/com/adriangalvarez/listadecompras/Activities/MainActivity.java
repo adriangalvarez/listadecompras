@@ -5,9 +5,7 @@ import com.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import com.adriangalvarez.listadecompras.Fragments.ComprasFragment;
 import com.adriangalvarez.listadecompras.Fragments.TotalFragment;
 import com.adriangalvarez.listadecompras.R;
-import com.adriangalvarez.listadecompras.Utils.AlertDialog;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Environment;
 import android.support.design.widget.TabLayout;
@@ -15,13 +13,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -195,8 +188,8 @@ public class MainActivity extends AppCompatActivity implements TotalFragment.IOn
 	}
 
 	@Override
-	public void OnFragmentInteraction( String articulo ){
+	public void OnFragmentInteraction( ItemBL itemBL ){
 		ComprasFragment comprasFragment = ( ComprasFragment ) getSupportFragmentManager().getFragments().get( 0 );
-		comprasFragment.AddItemToAdapterCompras( articulo );
+		comprasFragment.AddItemToAdapterCompras( itemBL );
 	}
 }

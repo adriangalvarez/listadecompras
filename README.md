@@ -32,3 +32,6 @@ ROOM.  Está a mitad de desarrollo la posibilidad de agregar una foto a cada art
 
 Usa 2 fragments (1 para el tab de "Compras" y otro para el tab "Total"), OptionsMenu, FloatingAccessButton y RecyclerView para
 los artículos.
+
+# Instalación
+Se puede descargar de https://play.google.com/store/apps/details?id=com.adriangalvarez.listadecompras

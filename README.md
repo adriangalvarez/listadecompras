@@ -29,3 +29,6 @@ un cuadro de texto donde podemos empezar a escribir el nombre de un artículo pa
 # Aspectos técnicos
 La app está desarrollada en Java.  Actualmente usa una BBDD sqlite local para almacenar los artículos, y accedemos a ella mediante
 ROOM.  Está a mitad de desarrollo la posibilidad de agregar una foto a cada artículo, así como el backup y restore de los datos.
+
+Usa 2 fragments (1 para el tab de "Compras" y otro para el tab "Total"), OptionsMenu, FloatingAccessButton y RecyclerView para
+los artículos.

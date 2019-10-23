@@ -16,29 +16,26 @@ import java.util.List;
 @Dao
 public interface ItemDAO{
 	@Insert
-	public long insert( ItemBL item );
+	long insert( ItemBL item );
 
 	@Update
-	public void update( ItemBL item );
-
-	@Delete
-	public void delete( ItemBL item );
+	void update( ItemBL item );
 
 	@Query( "Delete from Items" )
-	public void deleteAll();
+	void deleteAll();
 
-	@Query( "Select id, descripcion, cantidad, imagen from Items" )
-	public List< ItemBL > getAll();
+	@Query( "Select id, descripcion, cantidad, notas from Items" )
+	List< ItemBL > getAll();
 
 	@Query( "Select id from Items where descripcion = :descripcion" )
-	public boolean exists( String descripcion );
+	boolean exists( String descripcion );
 
 	@Query( "Update Items set cantidad = 0" )
-	public void deleteAllCompras();
+	void deleteAllCompras();
 
-	@Query( "Select id, descripcion, cantidad, imagen from Items where cantidad > 0" )
-	public List< ItemBL > getAllCompras();
+	@Query( "Select id, descripcion, cantidad, notas from Items where cantidad > 0" )
+	List< ItemBL > getAllCompras();
 
 	@Query( "Select count( id ) from Items where id = :id and cantidad > 0" )
-	public int existeEnCompras( long id );
+	int existeEnCompras( long id );
 }

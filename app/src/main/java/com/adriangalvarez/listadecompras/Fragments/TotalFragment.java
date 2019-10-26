@@ -1,13 +1,11 @@
 package com.adriangalvarez.listadecompras.Fragments;
 
 import android.app.Activity;
-import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -50,6 +48,11 @@ public class TotalFragment extends Fragment{
 	private static final int IMAGE_CAPTURE = 101;
 
 	private ImageView imageViewDialog;
+	private ImageButton imgDialogClose;
+	private ImageButton imgDialogCamera;
+	private ImageButton imgDialogGallery;
+	private ImageButton imgDialogDelete;
+
 	private ItemBL tempItem;
 
 	private List< ItemBL > listaTotal;
@@ -180,6 +183,18 @@ public class TotalFragment extends Fragment{
 				dialog.getWindow().setBackgroundDrawable( new ColorDrawable( android.graphics.Color.TRANSPARENT ) );
 				dialog.setCancelable( true );
 
+				imgDialogClose = dialog.findViewById( R.id.imgDialogClose );
+				imgDialogCamera = dialog.findViewById( R.id.imgDialogCamera );
+				imgDialogGallery = dialog.findViewById( R.id.imgDialogGallery );
+				imgDialogDelete = dialog.findViewById( R.id.imgDialogDelete );
+
+				imgDialogClose.setOnClickListener( new View.OnClickListener(){
+					@Override
+					public void onClick( View view ){
+						dialog.dismiss();
+					}
+				} );
+
 				// Mostrar la foto si existe, o una imagen genérica si no hay foto
 				imageViewDialog = dialog.findViewById( R.id.imgDialogPicture );
 				File imageFile = new File( getAppImageDir() + itemBL.getRutaImagen() );
@@ -187,7 +202,8 @@ public class TotalFragment extends Fragment{
 					imageViewDialog.setImageURI( Uri.fromFile( imageFile ) );
 
 				// Borrar la foto del producto
-				dialog.findViewById( R.id.imgDialogDelete ).setOnClickListener( new View.OnClickListener(){
+				// TODO: agregar confirmación
+				imgDialogDelete.setOnClickListener( new View.OnClickListener(){
 					@Override
 					public void onClick( View v ){
 						updateDB( "" );
@@ -197,7 +213,7 @@ public class TotalFragment extends Fragment{
 				} );
 
 				// Mostrar galeria para elegir imagen
-				dialog.findViewById( R.id.imgDialogGallery ).setOnClickListener( new View.OnClickListener(){
+				imgDialogGallery.setOnClickListener( new View.OnClickListener(){
 					@Override
 					public void onClick( View v ){
 						Intent intent = new Intent( Intent.ACTION_PICK );
@@ -209,7 +225,7 @@ public class TotalFragment extends Fragment{
 				} );
 
 				// Mostrar camara para sacar nueva foto
-				dialog.findViewById( R.id.imgDialogCamera ).setOnClickListener( new View.OnClickListener(){
+				imgDialogCamera.setOnClickListener( new View.OnClickListener(){
 					@Override
 					public void onClick( View v ){
 						Intent takePictureIntent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );

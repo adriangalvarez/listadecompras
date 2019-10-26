@@ -306,13 +306,13 @@ public class TotalFragment extends Fragment{
 					updateDB( filename );
 					tempItem.setRutaImagen( filename );
 
-					//TODO: esconder botones, dejar solo el de CERRAR
+					ActualizarLayoutDialogAceptarImagen();
 					break;
 				case IMAGE_CAPTURE:
 					imageViewDialog.setImageURI( Uri.fromFile( new File( getAppImageDir() + tempItem.getRutaImagen() ) ) );
 					tempItem.updateRutaImagen( context );
 
-					//TODO: esconder botones, dejar solo el de CERRAR
+					ActualizarLayoutDialogAceptarImagen();
 					break;
 			}
 		else
@@ -321,6 +321,13 @@ public class TotalFragment extends Fragment{
 					deleteImage();
 					break;
 			}
+	}
+
+	private void ActualizarLayoutDialogAceptarImagen(){
+		imgDialogCamera.setVisibility( View.GONE );
+		imgDialogGallery.setVisibility( View.GONE );
+		imgDialogDelete.setVisibility( View.GONE );
+		imgDialogClose.setVisibility( View.VISIBLE );
 	}
 
 	private void deleteImage(){

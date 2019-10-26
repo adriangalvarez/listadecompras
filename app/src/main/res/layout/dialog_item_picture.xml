@@ -37,7 +37,7 @@
                 android:paddingRight="12dp"
                 android:paddingBottom="12dp">
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/imgDialogCamera"
                     android:layout_width="50dp"
                     android:layout_height="50dp"

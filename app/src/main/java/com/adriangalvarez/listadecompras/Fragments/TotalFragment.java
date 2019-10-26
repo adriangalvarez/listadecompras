@@ -3,6 +3,7 @@ package com.adriangalvarez.listadecompras.Fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
@@ -41,7 +42,7 @@ import java.util.Date;
 import java.util.List;
 
 //TODO: ver permisos de camara y escritura en tiempo de ejecucion
-
+//TODO: ver si elimina los archivos de imagen al eliminar la imagen, tanto para imagenes de gallery como de camera
 public class TotalFragment extends Fragment{
 
 	private static final int GALLERY = 100;
@@ -200,15 +201,14 @@ public class TotalFragment extends Fragment{
 				File imageFile = new File( getAppImageDir() + itemBL.getRutaImagen() );
 				if( imageFile.exists() && !imageFile.isDirectory() )
 					imageViewDialog.setImageURI( Uri.fromFile( imageFile ) );
+				else
+					imgDialogDelete.setVisibility( View.GONE );
 
 				// Borrar la foto del producto
-				// TODO: agregar confirmación
 				imgDialogDelete.setOnClickListener( new View.OnClickListener(){
 					@Override
 					public void onClick( View v ){
-						updateDB( "" );
-						deleteImage();
-						dialog.dismiss();
+						ConfirmarBorradoImagen( dialog );
 					}
 				} );
 
@@ -406,4 +406,24 @@ public class TotalFragment extends Fragment{
 		return image;
 	}
 
+	private void ConfirmarBorradoImagen( final Dialog dialogImage ){
+		android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder( context );
+		builder.setMessage( R.string.confirmDeleteImage )
+				.setPositiveButton( R.string.deleteImageYes, new DialogInterface.OnClickListener(){
+					@Override
+					public void onClick( DialogInterface dialogInterface, int i ){
+						updateDB( "" );
+						deleteImage();
+						dialogInterface.dismiss();
+						dialogImage.dismiss();
+					}
+				} )
+				.setNegativeButton( R.string.buttonCancelar, new DialogInterface.OnClickListener(){
+					@Override
+					public void onClick( DialogInterface dialogInterface, int i ){
+						dialogInterface.dismiss();
+					}
+				} )
+				.show();
+	}
 }

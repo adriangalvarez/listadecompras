@@ -28,4 +28,6 @@
     <string name="reset_compras_alert_title">Vaciar lista de compras</string>
     <string name="reset_compras_alert_msg">¿Está seguro que desea vaciar la lista de compras?</string>
     <string name="reset_compras_success">La lista de compras se ha vaciado con éxito</string>
+    <string name="confirmDeleteImage">¿Confirma que desea ELIMINAR la imagen del producto?</string>
+    <string name="deleteImageYes">Eliminar Imagen</string>
 </resources>

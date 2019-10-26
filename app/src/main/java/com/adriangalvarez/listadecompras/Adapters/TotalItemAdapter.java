@@ -42,6 +42,7 @@ public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.Vie
 	public interface OnItemClickListener{
 		void OnItemClickListener( ItemBL itemBL, int position );
 		void OnItemClickAdd( ItemBL itemBL, int position );
+		void onItemPictureAddClick( ItemBL itemBL, int position );
 	}
 
 	@Override
@@ -63,11 +64,13 @@ public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.Vie
 
 		private TextView textViewDescripcion;
 		private ImageButton imageButtonEditar;
+		private ImageButton imageButtonImagen;
 
 		public ViewHolder( View itemView ){
 			super( itemView );
 			textViewDescripcion = itemView.findViewById( R.id.textViewTotalDescripcion );
 			imageButtonEditar = itemView.findViewById( R.id.imageEdit );
+			imageButtonImagen = itemView.findViewById( R.id.imagePicture );
 		}
 
 		public void bind( final ItemBL itemBL, final OnItemClickListener listener ){
@@ -82,6 +85,12 @@ public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.Vie
 				@Override
 				public void onClick( View v ){
 					listener.OnItemClickListener( itemBL, getAdapterPosition() );
+				}
+			} );
+			imageButtonImagen.setOnClickListener( new View.OnClickListener(){
+				@Override
+				public void onClick( View v ){
+					listener.onItemPictureAddClick( itemBL, getAdapterPosition() );
 				}
 			} );
 		}

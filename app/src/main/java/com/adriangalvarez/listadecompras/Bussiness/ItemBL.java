@@ -2,10 +2,10 @@ package com.adriangalvarez.listadecompras.Bussiness;
 
 import com.adriangalvarez.listadecompras.Database.AppDatabase;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.ContentResolver;
 import android.content.Context;
 
 import java.io.Serializable;
@@ -24,18 +24,17 @@ public class ItemBL implements Serializable{
 
 	private String descripcion;
 	private int cantidad;
-
-	@ColumnInfo( typeAffinity = ColumnInfo.BLOB)
-	private byte[] imagen;
+	private String rutaImagen;
 
 	public ItemBL(){
 		//Needed for ROOM
 	}
 
 	@Ignore
-	public ItemBL( String descripcion, int cantidad ){
+	public ItemBL( String descripcion, int cantidad, String rutaImagen ){
 		this.descripcion = descripcion;
 		this.cantidad = cantidad;
+		this.rutaImagen = rutaImagen;
 	}
 
 	public long getId(){
@@ -62,12 +61,12 @@ public class ItemBL implements Serializable{
 		this.cantidad = cantidad;
 	}
 
-	public byte[] getImagen(){
-		return imagen;
+	public String getRutaImagen(){
+		return rutaImagen;
 	}
 
-	public void setImagen( byte[] imagen ){
-		this.imagen = imagen;
+	public void setRutaImagen( String rutaImagen ){
+		this.rutaImagen = rutaImagen;
 	}
 
 	@Override
@@ -151,5 +150,9 @@ public class ItemBL implements Serializable{
 
 	public static boolean existeEnCompras( Context context, long id ){
 		return AppDatabase.getInstance( context ).getItemDAO().existeEnCompras( id ) > 0;
+	}
+
+	public void updateRutaImagen( Context context ){
+		AppDatabase.getInstance( context ).getItemDAO().updateImage( id, rutaImagen );
 	}
 }

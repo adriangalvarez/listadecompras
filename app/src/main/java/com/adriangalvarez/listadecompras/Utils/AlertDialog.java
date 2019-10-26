@@ -56,6 +56,7 @@ public class AlertDialog{
 					newItem = new ItemBL();
 				newItem.setDescripcion( editTextItem.getText().toString() );
 				newItem.setCantidad( iCant );
+				newItem.setRutaImagen( "" );
 				aceptar.Aceptar( newItem );
 			}
 		} );

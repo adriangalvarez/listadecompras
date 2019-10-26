@@ -14,16 +14,16 @@ import com.adriangalvarez.listadecompras.Data.ItemDAO;
 /**
  * Created by adriangalvarez on 19/08/2018.
  */
-@Database( entities = { ItemBL.class }, version = 2, exportSchema = false )
+@Database( entities = { ItemBL.class }, version = 3, exportSchema = false )
 
 public abstract class AppDatabase extends RoomDatabase{
 
 	private static final String DB_NAME = "ShoppingList.db";
 	private static volatile AppDatabase instance;
-	private static final Migration MIGRATION_1_2 = new Migration( 1, 2 ){
+	private static final Migration MIGRATION_1_2 = new Migration( 2, 3 ){
 		@Override
 		public void migrate( @NonNull SupportSQLiteDatabase database ){
-			database.execSQL( "ALTER TABLE Items ADD COLUMN imagen BLOB" );
+			database.execSQL( "ALTER TABLE Items ADD COLUMN rutaImagen TEXT" );
 
 //			database.execSQL( "CREATE TABLE users_temp( id TEXT, username TEXT, last_update INTEGER, PRIMARY KEY( id ) )" );
 //			database.execSQL( "INSERT INTO users_temp( id, username, last_update ) SELECT id, username, last_update FROM users" );
@@ -46,7 +46,7 @@ public abstract class AppDatabase extends RoomDatabase{
 	private static AppDatabase create( Context context ){
 		return Room.databaseBuilder( context,  AppDatabase.class, AppDatabase.DB_NAME )
 				.allowMainThreadQueries()
-				.addMigrations( MIGRATION_1_2 )
+				.fallbackToDestructiveMigration()
 				.build();
 	}
 

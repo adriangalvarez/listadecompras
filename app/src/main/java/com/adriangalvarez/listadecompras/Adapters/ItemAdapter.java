@@ -23,8 +23,8 @@ public class ItemAdapter extends RecyclerView.Adapter< ItemAdapter.ViewHolder >{
 
 	public interface onItemClickListener{
 		void onItemClick( ItemBL itemBL, int position );
-
 		void onItemAddClick( ItemBL itemBL, int position );
+		void onItemPictureViewClick( ItemBL itemBL, int position );
 	}
 
 	public ItemAdapter( List< ItemBL > data, int layout, onItemClickListener listener ){
@@ -52,19 +52,20 @@ public class ItemAdapter extends RecyclerView.Adapter< ItemAdapter.ViewHolder >{
 	public static class ViewHolder extends RecyclerView.ViewHolder{
 		private TextView textViewDescripcion;
 		private TextView textViewCantidad;
+		private ImageButton imageButtonImagen;
 		private ImageButton imageButtonAdd;
 
 		public ViewHolder( View view ){
 			super( view );
 			this.textViewCantidad = view.findViewById( R.id.textViewCantidad );
 			this.textViewDescripcion = view.findViewById( R.id.textViewDescripcion );
+			this.imageButtonImagen = view.findViewById( R.id.imagePictureView );
 			this.imageButtonAdd = view.findViewById( R.id.imageAdd );
 		}
 
 		public void bind( final ItemBL itemBL, final onItemClickListener listener ){
 			textViewDescripcion.setText( itemBL.getDescripcion() );
 			textViewCantidad.setText( String.valueOf( itemBL.getCantidad() ) );
-			imageButtonAdd.setImageResource( android.R.drawable.ic_input_add );
 			imageButtonAdd.setOnClickListener( new View.OnClickListener(){
 				@Override
 				public void onClick( View v ){
@@ -75,6 +76,12 @@ public class ItemAdapter extends RecyclerView.Adapter< ItemAdapter.ViewHolder >{
 				@Override
 				public void onClick( View v ){
 					listener.onItemClick( itemBL, getAdapterPosition() );
+				}
+			} );
+			imageButtonImagen.setOnClickListener( new View.OnClickListener(){
+				@Override
+				public void onClick( View v ){
+					listener.onItemPictureViewClick( itemBL, getAdapterPosition() );
 				}
 			} );
 		}

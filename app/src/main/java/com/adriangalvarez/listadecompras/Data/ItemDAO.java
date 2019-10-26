@@ -1,6 +1,7 @@
 package com.adriangalvarez.listadecompras.Data;
 
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
@@ -20,10 +21,13 @@ public interface ItemDAO{
 	@Update
 	void update( ItemBL item );
 
+	@Delete
+	void delete( ItemBL item );
+
 	@Query( "Delete from Items" )
 	void deleteAll();
 
-	@Query( "Select id, descripcion, cantidad, notas from Items" )
+	@Query( "Select id, descripcion, cantidad, rutaImagen from Items" )
 	List< ItemBL > getAll();
 
 	@Query( "Select id from Items where descripcion = :descripcion" )
@@ -32,9 +36,15 @@ public interface ItemDAO{
 	@Query( "Update Items set cantidad = 0" )
 	void deleteAllCompras();
 
-	@Query( "Select id, descripcion, cantidad, notas from Items where cantidad > 0" )
+	@Query( "Select id, descripcion, cantidad, rutaImagen from Items where cantidad > 0" )
 	List< ItemBL > getAllCompras();
 
 	@Query( "Select count( id ) from Items where id = :id and cantidad > 0" )
 	int existeEnCompras( long id );
+
+	@Query( "Update Items set rutaImagen = :rutaImagen where id = :id" )
+	void updateImage( long id, String rutaImagen );
+
+	@Query( "Update Items set rutaImagen = '' where id = :id" )
+	void deleteImage( long id );
 }

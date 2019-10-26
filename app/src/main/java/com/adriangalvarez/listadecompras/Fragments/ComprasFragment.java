@@ -1,7 +1,10 @@
 package com.adriangalvarez.listadecompras.Fragments;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -10,20 +13,25 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.adriangalvarez.listadecompras.Adapters.ItemAdapter;
 import com.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import com.adriangalvarez.listadecompras.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+//TODO: mostrar imagen
 public class ComprasFragment extends Fragment{
 
 	private Context context;
+	private ImageView imageViewDialog;
 
 	private List< ItemBL > listaCompras;
 	private ItemAdapter mAdapterCompras;
@@ -70,6 +78,21 @@ public class ComprasFragment extends Fragment{
 			public void onItemAddClick( ItemBL itemBL, int position ){
 				itemBL.addCantidad( context );
 				mAdapterCompras.notifyItemChanged( position );
+			}
+
+			@Override
+			public void onItemPictureViewClick( ItemBL itemBL, int position ){
+				final Dialog dialog = new Dialog( context );
+				dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
+				dialog.setContentView( R.layout.dialog_item_picture );
+				dialog.getWindow().setBackgroundDrawable( new ColorDrawable( android.graphics.Color.TRANSPARENT ) );
+				dialog.setCancelable( true );
+
+				imageViewDialog = dialog.findViewById( R.id.imgDialogPicture );
+				imageViewDialog.setImageURI( Uri.fromFile( new File( itemBL.getRutaImagen() ) ) );
+
+				dialog.show();
+
 			}
 		} );
 

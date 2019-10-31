@@ -30,4 +30,8 @@
     <string name="reset_compras_success">La lista de compras se ha vaciado con éxito</string>
     <string name="confirmDeleteImage">¿Confirma que desea ELIMINAR la imagen del producto?</string>
     <string name="deleteImageYes">Eliminar Imagen</string>
+    <string name="permissions_granted">Ahora puede agregar imágenes a los productos.</string>
+    <string name="permissions">Permisos</string>
+    <string name="permissions_message">Debe aceptar los permisos para agregar imágenes a los productos.</string>
+    <string name="errorDeletingImage">Hubo un error borrando la imagen</string>
 </resources>

@@ -5,21 +5,23 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -41,12 +43,19 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-//TODO: ver permisos de camara y escritura en tiempo de ejecucion
-//TODO: ver si elimina los archivos de imagen al eliminar la imagen, tanto para imagenes de gallery como de camera
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 public class TotalFragment extends Fragment{
 
 	private static final int GALLERY = 100;
 	private static final int IMAGE_CAPTURE = 101;
+	private static final int REQ_PERMISSIONS = 102;
+	private static final int REQ_GALLERY = 103;
+	private static final int REQ_VIEW_IMAGE = 104;
+
+	private static boolean permission_gallery_granted = false;
+	private static boolean permission_camera_granted = false;
 
 	private ImageView imageViewDialog;
 	private ImageButton imgDialogClose;
@@ -177,78 +186,12 @@ public class TotalFragment extends Fragment{
 			@Override
 			public void onItemPictureAddClick( ItemBL itemBL, int position ){
 				tempItem = itemBL;
+				ValidarPermisos( false, false );
 
-				final Dialog dialog = new Dialog( context );
-				dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
-				dialog.setContentView( R.layout.dialog_item_picture );
-				dialog.getWindow().setBackgroundDrawable( new ColorDrawable( android.graphics.Color.TRANSPARENT ) );
-				dialog.setCancelable( true );
-
-				imgDialogClose = dialog.findViewById( R.id.imgDialogClose );
-				imgDialogCamera = dialog.findViewById( R.id.imgDialogCamera );
-				imgDialogGallery = dialog.findViewById( R.id.imgDialogGallery );
-				imgDialogDelete = dialog.findViewById( R.id.imgDialogDelete );
-
-				imgDialogClose.setOnClickListener( new View.OnClickListener(){
-					@Override
-					public void onClick( View view ){
-						dialog.dismiss();
-					}
-				} );
-
-				// Mostrar la foto si existe, o una imagen genérica si no hay foto
-				imageViewDialog = dialog.findViewById( R.id.imgDialogPicture );
-				File imageFile = new File( getAppImageDir() + itemBL.getRutaImagen() );
-				if( imageFile.exists() && !imageFile.isDirectory() )
-					imageViewDialog.setImageURI( Uri.fromFile( imageFile ) );
-				else
-					imgDialogDelete.setVisibility( View.GONE );
-
-				// Borrar la foto del producto
-				imgDialogDelete.setOnClickListener( new View.OnClickListener(){
-					@Override
-					public void onClick( View v ){
-						ConfirmarBorradoImagen( dialog );
-					}
-				} );
-
-				// Mostrar galeria para elegir imagen
-				imgDialogGallery.setOnClickListener( new View.OnClickListener(){
-					@Override
-					public void onClick( View v ){
-						Intent intent = new Intent( Intent.ACTION_PICK );
-						intent.setType( "image/*" );
-						String[] mimeTypes = { "image/jpeg", "image/png" };
-						intent.putExtra( Intent.EXTRA_MIME_TYPES, mimeTypes );
-						startActivityForResult( intent, GALLERY );
-					}
-				} );
-
-				// Mostrar camara para sacar nueva foto
-				imgDialogCamera.setOnClickListener( new View.OnClickListener(){
-					@Override
-					public void onClick( View v ){
-						Intent takePictureIntent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
-						if( takePictureIntent.resolveActivity( context.getPackageManager() ) != null ){
-							File photoFile = null;
-							try {
-								photoFile = createImageFile();
-							} catch (IOException ex) {
-								// Error occurred while creating the File
-							}
-
-							if (photoFile != null) {
-								Uri photoURI = FileProvider.getUriForFile(context,
-										"com.adriangalvarez.listadecompras.fileprovider",
-										photoFile);
-								takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-								startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
-							}
-						}
-					}
-				} );
-
-				dialog.show();
+				// Necesito permisos de storage para mostrar imagen
+				if( permission_gallery_granted ){
+					MostrarImagen();
+				}
 			}
 		} );
 
@@ -267,6 +210,159 @@ public class TotalFragment extends Fragment{
 		} );
 
 		return view;
+	}
+
+	private void MostrarImagen(){
+		final Dialog dialog = new Dialog( context );
+		dialog.setContentView( R.layout.dialog_item_picture );
+		dialog.getWindow().setBackgroundDrawable( new ColorDrawable( android.graphics.Color.TRANSPARENT ) );
+		dialog.setCancelable( true );
+
+		imgDialogClose = dialog.findViewById( R.id.imgDialogClose );
+		imgDialogCamera = dialog.findViewById( R.id.imgDialogCamera );
+		imgDialogGallery = dialog.findViewById( R.id.imgDialogGallery );
+		imgDialogDelete = dialog.findViewById( R.id.imgDialogDelete );
+
+		imgDialogClose.setOnClickListener( new View.OnClickListener(){
+			@Override
+			public void onClick( View view ){
+				dialog.dismiss();
+			}
+		} );
+
+		// Mostrar la foto si existe, o una imagen genérica si no hay foto
+		imageViewDialog = dialog.findViewById( R.id.imgDialogPicture );
+		File imageFile = new File( getAppImageDir() + tempItem.getRutaImagen() );
+		if( imageFile.exists() && !imageFile.isDirectory() )
+			imageViewDialog.setImageURI( Uri.fromFile( imageFile ) );
+		else
+			imgDialogDelete.setVisibility( View.GONE );
+
+		// Borrar la foto del producto
+		imgDialogDelete.setOnClickListener( new View.OnClickListener(){
+			@Override
+			public void onClick( View v ){
+				ValidarPermisos( false, false );
+
+				// Para borrar, solo necesito el permiso de escritura
+				if( permission_gallery_granted )
+					ConfirmarBorradoImagen( dialog );
+			}
+		} );
+
+		// Mostrar galeria para elegir imagen
+		imgDialogGallery.setOnClickListener( new View.OnClickListener(){
+			@Override
+			public void onClick( View v ){
+				ValidarPermisos( false, true );
+
+				// Para la galería, solo necesito el permiso de escritura
+				if( permission_gallery_granted ){
+					MostrarGaleria();
+				}
+			}
+		} );
+
+		// Mostrar camara para sacar nueva foto
+		imgDialogCamera.setOnClickListener( new View.OnClickListener(){
+			@Override
+			public void onClick( View v ){
+				ValidarPermisos( true, false );
+
+				// Para la cámara necesito ambos permisos
+				if( permission_camera_granted && permission_gallery_granted ){
+					MostrarCamara();
+				}
+			}
+		} );
+
+		dialog.show();
+	}
+
+	private void MostrarCamara(){
+		Intent takePictureIntent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
+		if( takePictureIntent.resolveActivity( context.getPackageManager() ) != null ){
+			File photoFile = null;
+			try {
+				photoFile = createImageFile();
+			} catch ( IOException ex) {
+				// Error occurred while creating the File
+			}
+
+			if (photoFile != null) {
+				Uri photoURI = FileProvider.getUriForFile(context,
+						"com.adriangalvarez.listadecompras.fileprovider",
+						photoFile);
+				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+				startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
+			}
+		}
+	}
+
+	private void MostrarGaleria(){
+		Intent intent = new Intent( Intent.ACTION_PICK );
+		intent.setType( "image/*" );
+		String[] mimeTypes = { "image/jpeg", "image/png" };
+		intent.putExtra( Intent.EXTRA_MIME_TYPES, mimeTypes );
+		startActivityForResult( intent, GALLERY );
+	}
+
+	private void ValidarPermisos( boolean pedirCamara, boolean mostrarGaleria ){
+		boolean permisoCamara = ContextCompat.checkSelfPermission( context, CAMERA ) == PackageManager.PERMISSION_GRANTED;
+		boolean permisoEscritura = ContextCompat.checkSelfPermission( context, WRITE_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED;
+
+		if( permisoEscritura ){
+			permission_gallery_granted = true;
+		}
+
+		if( permisoCamara ){
+			permission_camera_granted = true;
+		}
+
+		if( permisoEscritura && ( !pedirCamara || permisoCamara ) ){
+			return;
+		}
+
+		if( !pedirCamara )
+			if( mostrarGaleria )
+				requestPermissions( new String[]{ WRITE_EXTERNAL_STORAGE }, REQ_GALLERY );
+			else
+				requestPermissions( new String[]{ WRITE_EXTERNAL_STORAGE }, REQ_VIEW_IMAGE );
+		else
+			requestPermissions( new String[]{ WRITE_EXTERNAL_STORAGE, CAMERA }, REQ_PERMISSIONS );
+	}
+
+	@Override
+	public void onRequestPermissionsResult( int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults ){
+		super.onRequestPermissionsResult( requestCode, permissions, grantResults );
+
+		switch( requestCode ){
+			case REQ_PERMISSIONS:
+				if( grantResults.length == 2 &&
+						grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+						grantResults[1] == PackageManager.PERMISSION_GRANTED ){
+					MostrarCamara();
+				}else
+					Toast.makeText( context, R.string.permissions_message, Toast.LENGTH_LONG ).show();
+
+				break;
+			case REQ_GALLERY:
+				if( grantResults.length == 1 &&
+						grantResults[0] == PackageManager.PERMISSION_GRANTED )
+					MostrarGaleria();
+				else
+					Toast.makeText( context, R.string.permissions_message, Toast.LENGTH_LONG ).show();
+
+				break;
+			case REQ_VIEW_IMAGE:
+				if( grantResults.length == 1 &&
+						grantResults[0] == PackageManager.PERMISSION_GRANTED )
+					MostrarImagen();
+				else
+					Toast.makeText( context, R.string.permissions_message, Toast.LENGTH_LONG ).show();
+
+				break;
+		}
 	}
 
 	public void ActualizarListaTotal(){
@@ -330,9 +426,9 @@ public class TotalFragment extends Fragment{
 		imgDialogClose.setVisibility( View.VISIBLE );
 	}
 
-	private void deleteImage(){
+	private boolean deleteImage(){
 		File temp = new File( getAppImageDir() + tempItem.getRutaImagen() );
-		temp.delete();
+		return temp.delete();
 	}
 
 	private void updateDB( String filename ){
@@ -394,12 +490,16 @@ public class TotalFragment extends Fragment{
 	}
 
 	private File createImageFile() throws IOException {
+		File directory = new File( getAppImageDir() );
+		if( !directory.exists() )
+			directory.mkdirs();
+
 		// Create an image file name
 		String imageFileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 		File image = File.createTempFile(
 				imageFileName,  /* prefix */
 				".jpg",         /* suffix */
-				new File( getAppImageDir() )      /* directory */
+				directory       /* directory */
 		);
 
 		tempItem.setRutaImagen( image.getName() );
@@ -412,8 +512,10 @@ public class TotalFragment extends Fragment{
 				.setPositiveButton( R.string.deleteImageYes, new DialogInterface.OnClickListener(){
 					@Override
 					public void onClick( DialogInterface dialogInterface, int i ){
-						updateDB( "" );
-						deleteImage();
+						if( deleteImage() )
+							updateDB( "" );
+						else
+							Toast.makeText( context, R.string.errorDeletingImage, Toast.LENGTH_LONG ).show();
 						dialogInterface.dismiss();
 						dialogImage.dismiss();
 					}

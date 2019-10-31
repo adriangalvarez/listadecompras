@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -83,16 +83,29 @@ public class ComprasFragment extends Fragment{
 			@Override
 			public void onItemPictureViewClick( ItemBL itemBL, int position ){
 				final Dialog dialog = new Dialog( context );
-				dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
 				dialog.setContentView( R.layout.dialog_item_picture );
 				dialog.getWindow().setBackgroundDrawable( new ColorDrawable( android.graphics.Color.TRANSPARENT ) );
 				dialog.setCancelable( true );
 
+				ImageView imgDialogClose = dialog.findViewById( R.id.imgDialogClose );
+				imgDialogClose.setVisibility( View.VISIBLE );
+				dialog.findViewById( R.id.imgDialogCamera ).setVisibility( View.GONE );
+				dialog.findViewById( R.id.imgDialogGallery ).setVisibility( View.GONE );
+				dialog.findViewById( R.id.imgDialogDelete ).setVisibility( View.GONE );
+
+				imgDialogClose.setOnClickListener( new View.OnClickListener(){
+					@Override
+					public void onClick( View view ){
+						dialog.dismiss();
+					}
+				} );
+
 				imageViewDialog = dialog.findViewById( R.id.imgDialogPicture );
-				imageViewDialog.setImageURI( Uri.fromFile( new File( itemBL.getRutaImagen() ) ) );
+				File imageFile = new File( getAppImageDir() + itemBL.getRutaImagen() );
+				if( imageFile.exists() && !imageFile.isDirectory() )
+					imageViewDialog.setImageURI( Uri.fromFile( imageFile ) );
 
 				dialog.show();
-
 			}
 		} );
 
@@ -112,6 +125,10 @@ public class ComprasFragment extends Fragment{
 		} );
 
 		return view;
+	}
+
+	private String getAppImageDir(){
+		return Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_PICTURES ) + File.separator + "ListaDeCompras" + File.separator;
 	}
 
 	private String GenerarListaComprasToShare(){

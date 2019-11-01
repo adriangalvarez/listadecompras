@@ -102,6 +102,8 @@ public class ItemBL implements Serializable{
 			result.append( itemBL.getDescripcion() )
 					.append( SEPARATOR )
 					.append( itemBL.getCantidad() )
+					.append( SEPARATOR )
+					.append( itemBL.getRutaImagen() )
 					.append( System.lineSeparator() );
 		}
 		return result.toString();
@@ -118,6 +120,8 @@ public class ItemBL implements Serializable{
 			newItem = new ItemBL();
 			newItem.setDescripcion( keyValue[ 0 ] );
 			newItem.setCantidad( Integer.parseInt( keyValue[ 1 ] ) );
+			if( keyValue.length == 3 )
+				newItem.setRutaImagen( keyValue[ 2 ] );
 			newItem.setId( newItem.add( context ) );
 		}
 	}

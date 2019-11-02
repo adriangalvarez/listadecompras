@@ -4,6 +4,7 @@ import com.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import com.adriangalvarez.listadecompras.R;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -17,6 +18,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by adriangalvarez on 09/01/2018.
@@ -70,19 +73,29 @@ public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.Vie
 		return mListaFiltrada.size();
 	}
 
-	public void setTextSizes( Context context, boolean makeBigger ){
+	public void setTextSizes( Context context, boolean makeBigger, String prefsName ){
+		boolean update = false;
+
 		if( makeBigger ){
 			if( mTextSize < ( MAXIMUM_TEXT_SIZE + 2 ) ){
 				this.mTextSize += 2;
-				notifyDataSetChanged();
+				update = true;
 			}else
 				Toast.makeText( context, R.string.biggest_text, Toast.LENGTH_SHORT ).show();
 		}else{
 			if( mTextSize > ( MINIMUM_TEXT_SIZE - 2 ) ){
 				this.mTextSize -= 2;
-				notifyDataSetChanged();
+				update = true;
 			}else
 				Toast.makeText( context, R.string.smallest_text, Toast.LENGTH_SHORT ).show();
+		}
+
+		if( update ){
+			notifyDataSetChanged();
+			SharedPreferences settings = context.getSharedPreferences(prefsName, MODE_PRIVATE);
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putInt( "textSizes", mTextSize );
+			editor.apply();
 		}
 	}
 

@@ -54,8 +54,6 @@ public class TotalFragment extends Fragment{
 	private static final int REQ_GALLERY = 103;
 	private static final int REQ_VIEW_IMAGE = 104;
 
-	private static final int DEFAULT_TEXT_SIZE = 18;
-
 	private static boolean permission_gallery_granted = false;
 	private static boolean permission_camera_granted = false;
 
@@ -98,7 +96,6 @@ public class TotalFragment extends Fragment{
 	@Override
 	public View onCreateView( LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState ){
 		this.context = getContext();
-		this.textSizes = DEFAULT_TEXT_SIZE;
 
 		// Inflate the layout for this fragment
 		View view = inflater.inflate( R.layout.fragment_total, container, false );
@@ -533,7 +530,11 @@ public class TotalFragment extends Fragment{
 				.show();
 	}
 
-	public void changeTextSize( boolean makeBigger ){
-		mAdapterTotal.setTextSizes( context, makeBigger );
+	public void changeTextSize( boolean makeBigger, String prefsName ){
+		mAdapterTotal.setTextSizes( context, makeBigger, prefsName );
+	}
+
+	public void setDefaultTextSize( int textSize ){
+		textSizes = textSize;
 	}
 }

@@ -27,10 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-//TODO: mostrar imagen
 public class ComprasFragment extends Fragment{
-
-	private static final int DEFAULT_TEXT_SIZE = 18;
 
 	private Context context;
 	private ImageView imageViewDialog;
@@ -53,7 +50,6 @@ public class ComprasFragment extends Fragment{
 		View view = inflater.inflate( R.layout.fragment_compras, container, false );
 
 		this.context = getContext();
-		this.textSizes = DEFAULT_TEXT_SIZE;
 
 		listaCompras = new ArrayList<>();
 		InitListaCompras();
@@ -175,7 +171,11 @@ public class ComprasFragment extends Fragment{
 		}
 	}
 
-	public void changeTextSize( boolean makeBigger ){
-		mAdapterCompras.setTextSizes( context, makeBigger );
+	public void changeTextSize( boolean makeBigger, String prefsName ){
+		mAdapterCompras.setTextSizes( context, makeBigger, prefsName );
+	}
+
+	public void setDefaultTextSize( int textSize ){
+		textSizes = textSize;
 	}
 }

@@ -7,10 +7,12 @@ import com.adriangalvarez.listadecompras.Fragments.TotalFragment;
 import com.adriangalvarez.listadecompras.R;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements TotalFragment.IOn
 
 	public static final String BACKUP_FILE = "ListaDeCompras.backup";
 	private final String BACKUP_DIR = "/ListaDeCompras";
+	private static final int DEFAULT_TEXT_SIZE = 18;
+	public static final String PREFS_NAME = "ListaDeComprasSettings";
 
 	private PagerAdapter adapter;
 
@@ -107,9 +111,9 @@ public class MainActivity extends AppCompatActivity implements TotalFragment.IOn
 
 	private void changeTextSize( boolean makeBigger ){
 		TotalFragment totalFragment = ( TotalFragment ) getSupportFragmentManager().getFragments().get( 0 );
-		totalFragment.changeTextSize( makeBigger );
+		totalFragment.changeTextSize( makeBigger, PREFS_NAME );
 		ComprasFragment comprasFragment = ( ComprasFragment ) getSupportFragmentManager().getFragments().get( 1 );
-		comprasFragment.changeTextSize( makeBigger );
+		comprasFragment.changeTextSize( makeBigger, PREFS_NAME );
 	}
 
 	private void ResetCompras(){
@@ -210,5 +214,20 @@ public class MainActivity extends AppCompatActivity implements TotalFragment.IOn
 	public void OnFragmentInteraction( ItemBL itemBL ){
 		ComprasFragment comprasFragment = ( ComprasFragment ) getSupportFragmentManager().getFragments().get( 1 );
 		comprasFragment.AddItemToAdapterCompras( itemBL );
+	}
+
+	@Override
+	public void onAttachFragment( Fragment fragment ){
+		super.onAttachFragment( fragment );
+
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+		int value = settings.getInt("textSizes", DEFAULT_TEXT_SIZE);
+
+		if( fragment instanceof TotalFragment ){
+			((TotalFragment) fragment).setDefaultTextSize( value );
+		}
+		if( fragment instanceof ComprasFragment ){
+			((ComprasFragment) fragment).setDefaultTextSize( value );
+		}
 	}
 }

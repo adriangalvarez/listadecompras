@@ -9,6 +9,7 @@ import com.adriangalvarez.listadecompras.R;
 import android.content.DialogInterface;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -68,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements TotalFragment.IOn
 		adapter = new PagerAdapter( getSupportFragmentManager(), tabLayout.getTabCount() );
 		viewPager.setAdapter( adapter );
 		viewPager.addOnPageChangeListener( new TabLayout.TabLayoutOnPageChangeListener( tabLayout ) );
+
+		// Tab seleccionado por default: indice 1 (Total)
+		tabLayout.setScrollPosition( 1, 0f, true );
+		viewPager.setCurrentItem( 1 );
 	}
 
 	@Override

@@ -2,7 +2,10 @@ package com.adriangalvarez.listadecompras.Adapters;
 
 import com.adriangalvarez.listadecompras.Bussiness.ItemBL;
 import com.adriangalvarez.listadecompras.R;
+
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +13,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,18 +24,23 @@ import java.util.List;
 
 public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.ViewHolder > implements Filterable{
 
+	private final int MINIMUM_TEXT_SIZE = 14;
+	private final int MAXIMUM_TEXT_SIZE = 22;
+
 	private int mLayout;
+	private int mTextSize;
 	private List< ItemBL > mLista;
 	private OnItemClickListener mOnItemClickListener;
 	private List< ItemBL > mListaFiltrada;
 	private ItemFilter mFilter;
 
-	public TotalItemAdapter( int layout, List< ItemBL > lista, OnItemClickListener onItemClickListener ){
+	public TotalItemAdapter( int textSize, int layout, List< ItemBL > lista, OnItemClickListener onItemClickListener ){
 		mLayout = layout;
 		mLista = lista;
 		mListaFiltrada = lista;
 		mOnItemClickListener = onItemClickListener;
 		mFilter = new ItemFilter();
+		mTextSize = textSize;
 	}
 
 	@Override
@@ -52,12 +61,29 @@ public class TotalItemAdapter extends RecyclerView.Adapter< TotalItemAdapter.Vie
 
 	@Override
 	public void onBindViewHolder( ViewHolder holder, int position ){
+		holder.textViewDescripcion.setTextSize( TypedValue.COMPLEX_UNIT_SP, mTextSize );
 		holder.bind( mListaFiltrada.get( position ), mOnItemClickListener );
 	}
 
 	@Override
 	public int getItemCount(){
 		return mListaFiltrada.size();
+	}
+
+	public void setTextSizes( Context context, boolean makeBigger ){
+		if( makeBigger ){
+			if( mTextSize < ( MAXIMUM_TEXT_SIZE + 2 ) ){
+				this.mTextSize += 2;
+				notifyDataSetChanged();
+			}else
+				Toast.makeText( context, R.string.biggest_text, Toast.LENGTH_SHORT ).show();
+		}else{
+			if( mTextSize > ( MINIMUM_TEXT_SIZE - 2 ) ){
+				this.mTextSize -= 2;
+				notifyDataSetChanged();
+			}else
+				Toast.makeText( context, R.string.smallest_text, Toast.LENGTH_SHORT ).show();
+		}
 	}
 
 	public static class ViewHolder extends RecyclerView.ViewHolder{

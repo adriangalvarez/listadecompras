@@ -3,6 +3,21 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_text_bigger"
+        android:icon="@android:drawable/stat_sys_upload"
+        android:orderInCategory="1"
+        android:title="@string/om_text_bigger"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/menu_text_smaller"
+        android:icon="@android:drawable/stat_sys_download"
+        android:orderInCategory="1"
+        android:title="@string/om_text_smaller"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/menu_reset_compras"
         android:icon="@android:drawable/ic_delete"
         android:orderInCategory="1"

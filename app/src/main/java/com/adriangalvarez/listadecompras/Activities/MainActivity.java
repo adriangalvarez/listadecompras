@@ -84,6 +84,12 @@ public class MainActivity extends AppCompatActivity implements TotalFragment.IOn
 	@Override
 	public boolean onOptionsItemSelected( MenuItem item ){
 		switch( item.getItemId() ){
+			case R.id.menu_text_bigger:
+				changeTextSize( true );
+				break;
+			case R.id.menu_text_smaller:
+				changeTextSize( false );
+				break;
 			case R.id.menu_reset_compras:
 				ResetCompras();
 				break;
@@ -97,6 +103,12 @@ public class MainActivity extends AppCompatActivity implements TotalFragment.IOn
 				return super.onOptionsItemSelected( item );
 		}
 		return true;
+	}
+
+	private void changeTextSize( boolean makeBigger ){
+		TotalFragment totalFragment = ( TotalFragment ) getSupportFragmentManager().getFragments().get( 0 );
+		totalFragment.changeTextSize( makeBigger );
+		ComprasFragment comprasFragment = ( ComprasFragment ) getSupportFragmentManager().getFragments().get( 1 );
 	}
 
 	private void ResetCompras(){
@@ -195,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements TotalFragment.IOn
 
 	@Override
 	public void OnFragmentInteraction( ItemBL itemBL ){
-		ComprasFragment comprasFragment = ( ComprasFragment ) getSupportFragmentManager().getFragments().get( 0 );
+		ComprasFragment comprasFragment = ( ComprasFragment ) getSupportFragmentManager().getFragments().get( 1 );
 		comprasFragment.AddItemToAdapterCompras( itemBL );
 	}
 }

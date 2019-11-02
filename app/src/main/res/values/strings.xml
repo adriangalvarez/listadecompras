@@ -34,4 +34,8 @@
     <string name="permissions">Permisos</string>
     <string name="permissions_message">Debe aceptar los permisos para agregar imágenes a los productos.</string>
     <string name="errorDeletingImage">Hubo un error borrando la imagen</string>
+    <string name="om_text_bigger">Letras más grandes</string>
+    <string name="om_text_smaller">Letras más pequeñas</string>
+    <string name="biggest_text">Tamaño máximo de letra</string>
+    <string name="smallest_text">Tamaño mínimo de letra</string>
 </resources>

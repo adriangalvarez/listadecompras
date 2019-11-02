@@ -30,6 +30,8 @@ import java.util.List;
 //TODO: mostrar imagen
 public class ComprasFragment extends Fragment{
 
+	private static final int DEFAULT_TEXT_SIZE = 18;
+
 	private Context context;
 	private ImageView imageViewDialog;
 
@@ -40,6 +42,8 @@ public class ComprasFragment extends Fragment{
 
 	private FloatingActionButton buttonShare;
 
+	private int textSizes;
+
 	public ComprasFragment(){
 		// Required empty public constructor
 	}
@@ -49,6 +53,7 @@ public class ComprasFragment extends Fragment{
 		View view = inflater.inflate( R.layout.fragment_compras, container, false );
 
 		this.context = getContext();
+		this.textSizes = DEFAULT_TEXT_SIZE;
 
 		listaCompras = new ArrayList<>();
 		InitListaCompras();
@@ -66,7 +71,7 @@ public class ComprasFragment extends Fragment{
 
 		mRecyclerCompras = view.findViewById( R.id.recycler_compras );
 		mLayoutManager = new LinearLayoutManager( context );
-		mAdapterCompras = new ItemAdapter( listaCompras, R.layout.listview_row_item, new ItemAdapter.onItemClickListener(){
+		mAdapterCompras = new ItemAdapter( textSizes, listaCompras, R.layout.listview_row_item, new ItemAdapter.onItemClickListener(){
 			@Override
 			public void onItemClick( ItemBL itemBL, int position ){
 				listaCompras.remove( itemBL );
@@ -168,5 +173,9 @@ public class ComprasFragment extends Fragment{
 		}else{
 			Toast.makeText( context, R.string.itemYaExiste, Toast.LENGTH_SHORT ).show();
 		}
+	}
+
+	public void changeTextSize( boolean makeBigger ){
+		mAdapterCompras.setTextSizes( context, makeBigger );
 	}
 }

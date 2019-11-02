@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements TotalFragment.IOn
 		TotalFragment totalFragment = ( TotalFragment ) getSupportFragmentManager().getFragments().get( 0 );
 		totalFragment.changeTextSize( makeBigger );
 		ComprasFragment comprasFragment = ( ComprasFragment ) getSupportFragmentManager().getFragments().get( 1 );
+		comprasFragment.changeTextSize( makeBigger );
 	}
 
 	private void ResetCompras(){
